@@ -2,14 +2,19 @@
 
 import React, { useEffect, useState } from "react";
 import Link from "next/link";
-import { NavItem } from "./NavItem";
 import { Magnetic } from "@/components/motion/Magnetic";
+import { Menu, X, ArrowUpRight } from "lucide-react";
 
-const NAV_LINKS = [
-  { label: "WORK", href: "#work", index: "01" },
-  { label: "DSA", href: "#dsa", index: "02" },
-  { label: "ABOUT", href: "#about", index: "03" },
-  { label: "CONTACT", href: "#contact", index: "04" },
+export const NAV_LINKS = [
+  { label: "ABOUT", href: "#about", index: "01" },
+  { label: "EDUCATION", href: "#education", index: "02" },
+  { label: "EXPERIENCE", href: "#experience", index: "03" },
+  { label: "SKILLS", href: "#skills", index: "04" },
+  { label: "PROJECTS", href: "#projects", index: "05" },
+  { label: "RESEARCH", href: "#research", index: "06" },
+  { label: "ACHIEVEMENTS", href: "#achievements", index: "07" },
+  { label: "CODING", href: "#coding", index: "08" },
+  { label: "CONTACT", href: "#contact", index: "09" },
 ];
 
 export function Navbar() {
@@ -25,56 +30,84 @@ export function Navbar() {
     return () => window.removeEventListener("scroll", handleScroll);
   }, []);
 
+  const handleScrollTo = (e: React.MouseEvent<HTMLAnchorElement>, href: string) => {
+    if (href.startsWith("#")) {
+      e.preventDefault();
+      const target = document.querySelector(href);
+      if (target) {
+        target.scrollIntoView({ behavior: "smooth" });
+        setMobileMenuOpen(false);
+      }
+    }
+  };
+
   return (
     <header
-      className={`fixed top-0 inset-x-0 z-40 transition-all duration-500 ${
-        scrolled
-          ? "pt-3 pb-3"
-          : "pt-6 pb-6"
+      className={`fixed top-0 inset-x-0 z-40 transition-all duration-300 ${
+        scrolled ? "pt-2 pb-2" : "pt-5 pb-5"
       }`}
     >
-      <div className="mx-auto max-w-[1400px] px-6 sm:px-10 lg:px-16">
+      <div className="mx-auto max-w-[1440px] px-4 sm:px-8 lg:px-12">
         <nav
-          className={`flex items-center justify-between transition-all duration-500 ${
+          className={`flex items-center justify-between transition-all duration-300 ${
             scrolled
-              ? "rounded-full border border-white/[0.08] bg-[#070809]/85 px-6 py-2.5 shadow-2xl backdrop-blur-md"
-              : "border-b border-white/[0.04] pb-4"
+              ? "rounded-full border border-white/[0.08] bg-[#060913]/90 px-5 py-2 shadow-2xl backdrop-blur-md"
+              : "border-b border-white/[0.04] pb-3"
           }`}
         >
           {/* Brand Mark */}
           <Magnetic strength={0.25}>
             <Link
-              href="/"
+              href="#hero"
               data-cursor="hover"
-              className="flex items-center gap-2 group font-mono text-sm tracking-widest text-[#F5F6F8] uppercase"
+              className="flex items-center gap-2 group font-mono text-sm tracking-widest text-[#F8FAFC] uppercase"
             >
-              <span className="font-bold text-white transition-colors group-hover:text-[#d4ff00]">
-                RJ
+              <span className="font-black text-white tracking-tighter transition-colors group-hover:text-[#d4af37]">
+                N. P. RAHUL JAIN
               </span>
-              <span className="text-[#464B55]">{"//"}</span>
-              <span className="text-xs text-[#7B8291]">01</span>
+              <span className="text-[#64748B]">{"//"}</span>
+              <span className="text-[10px] text-[#94A3B8] font-normal hidden sm:inline">AI/ML · DSU</span>
             </Link>
           </Magnetic>
 
-          {/* Status Indicator (Center on Desktop) */}
-          <div className="hidden lg:flex items-center gap-2.5 rounded-full border border-white/[0.06] bg-white/[0.02] px-3.5 py-1 font-mono text-[10px] tracking-wider text-[#7B8291] uppercase">
-            <span className="relative flex h-2 w-2">
-              <span className="absolute inline-flex h-full w-full animate-ping rounded-full bg-[#d4ff00] opacity-60" />
-              <span className="relative inline-flex h-2 w-2 rounded-full bg-[#d4ff00]" />
+          {/* Center Telemetry Status Badge */}
+          <div className="hidden xl:flex items-center gap-2 rounded-full border border-white/[0.06] bg-white/[0.02] px-3 py-1 font-mono text-[9px] tracking-wider text-[#94A3B8] uppercase">
+            <span className="relative flex h-1.5 w-1.5">
+              <span className="absolute inline-flex h-full w-full animate-ping rounded-full bg-[#d4af37] opacity-60" />
+              <span className="relative inline-flex h-1.5 w-1.5 rounded-full bg-[#d4af37]" />
             </span>
-            <span className="text-white/80 font-medium">AVAILABLE FOR HIGH-IMPACT ROLES</span>
+            <span className="text-white/80 font-medium">B.TECH CSE (AI & ML) // CGPA 9.35</span>
           </div>
 
           {/* Desktop Nav Items */}
-          <div className="hidden md:flex items-center gap-2">
+          <div className="hidden lg:flex items-center gap-0.5">
             {NAV_LINKS.map((item) => (
-              <NavItem
+              <a
                 key={item.label}
-                label={item.label}
                 href={item.href}
-                index={item.index}
-              />
+                onClick={(e) => handleScrollTo(e, item.href)}
+                data-cursor="hover"
+                className="group relative flex items-center gap-1 px-2.5 py-1 font-mono text-[11px] tracking-wider text-[#94A3B8] uppercase transition-colors duration-200 hover:text-[#F8FAFC] focus-visible:text-[#d4af37]"
+              >
+                <span className="text-[9px] text-[#64748B] transition-colors group-hover:text-[#d4af37]">
+                  {item.index}
+                </span>
+                <span>{item.label}</span>
+                <span className="absolute bottom-0 left-2 right-2 h-[1px] scale-x-0 bg-[#d4af37] transition-transform duration-300 ease-out group-hover:scale-x-100" />
+              </a>
             ))}
+          </div>
+
+          {/* CTA Button */}
+          <div className="hidden sm:flex items-center gap-3">
+            <a
+              href="#contact"
+              onClick={(e) => handleScrollTo(e, "#contact")}
+              className="rounded-full border border-[#d4af37]/40 bg-[#d4af37]/10 px-3.5 py-1.5 font-mono text-xs font-semibold text-[#e5c158] hover:bg-[#d4af37] hover:text-[#060913] transition-all flex items-center gap-1.5"
+            >
+              <span>CONNECT</span>
+              <ArrowUpRight size={13} />
+            </a>
           </div>
 
           {/* Mobile Menu Toggle Button */}
@@ -83,47 +116,46 @@ export function Navbar() {
             onClick={() => setMobileMenuOpen(!mobileMenuOpen)}
             aria-label="Toggle navigation menu"
             aria-expanded={mobileMenuOpen}
-            className="flex h-9 w-9 items-center justify-center rounded border border-white/[0.08] text-[#7B8291] hover:text-white md:hidden"
+            className="flex h-9 w-9 items-center justify-center rounded border border-white/[0.08] text-[#94A3B8] hover:text-white lg:hidden"
           >
-            <div className="flex flex-col gap-1.5">
-              <span
-                className={`h-[1px] w-5 bg-current transition-transform duration-300 ${
-                  mobileMenuOpen ? "translate-y-2 rotate-45" : ""
-                }`}
-              />
-              <span
-                className={`h-[1px] w-5 bg-current transition-opacity duration-300 ${
-                  mobileMenuOpen ? "opacity-0" : ""
-                }`}
-              />
-              <span
-                className={`h-[1px] w-5 bg-current transition-transform duration-300 ${
-                  mobileMenuOpen ? "-translate-y-2 -rotate-45" : ""
-                }`}
-              />
-            </div>
+            {mobileMenuOpen ? <X size={18} /> : <Menu size={18} />}
           </button>
         </nav>
 
-        {/* Mobile Dropdown */}
+        {/* Mobile Dropdown Menu */}
         {mobileMenuOpen && (
-          <div className="mt-2 rounded-lg border border-white/[0.08] bg-[#0B0C0E]/95 p-4 backdrop-blur-lg md:hidden">
-            <div className="mb-3 flex items-center gap-2 border-b border-white/[0.06] pb-2 font-mono text-[10px] text-[#7B8291] uppercase">
-              <span className="h-1.5 w-1.5 rounded-full bg-[#d4ff00]" />
-              AVAILABLE FOR HIGH-IMPACT ROLES
+          <div className="mt-2 rounded-xl border border-white/[0.12] bg-[#060913]/95 p-5 shadow-2xl backdrop-blur-xl lg:hidden">
+            <div className="mb-4 flex items-center justify-between border-b border-white/[0.06] pb-3 font-mono text-[10px] text-[#94A3B8] uppercase">
+              <span className="flex items-center gap-1.5">
+                <span className="h-1.5 w-1.5 rounded-full bg-[#d4af37]" />
+                NAVIGATION DIRECTORY
+              </span>
+              <span>9 NODES</span>
             </div>
-            <div className="flex flex-col gap-2">
+
+            <div className="grid grid-cols-2 gap-2">
               {NAV_LINKS.map((item) => (
-                <Link
+                <a
                   key={item.label}
                   href={item.href}
-                  onClick={() => setMobileMenuOpen(false)}
-                  className="flex items-center justify-between py-2 font-mono text-sm tracking-wider text-[#7B8291] uppercase hover:text-[#d4ff00]"
+                  onClick={(e) => handleScrollTo(e, item.href)}
+                  className="flex items-center justify-between rounded border border-white/[0.04] bg-white/[0.01] px-3 py-2.5 font-mono text-xs tracking-wider text-[#94A3B8] uppercase hover:border-[#d4af37]/40 hover:text-[#d4af37] transition-colors"
                 >
                   <span>{item.label}</span>
-                  <span className="text-xs text-[#464B55]">{item.index}</span>
-                </Link>
+                  <span className="text-[10px] text-[#64748B]">{item.index}</span>
+                </a>
               ))}
+            </div>
+
+            <div className="mt-4 pt-4 border-t border-white/[0.06] flex items-center justify-between">
+              <span className="font-mono text-[10px] text-[#64748B]">BENGALURU, INDIA</span>
+              <a
+                href="#contact"
+                onClick={(e) => handleScrollTo(e, "#contact")}
+                className="font-mono text-xs text-[#d4af37] font-bold uppercase hover:underline"
+              >
+                GET IN TOUCH →
+              </a>
             </div>
           </div>
         )}

@@ -55,7 +55,7 @@ export function HeroCanvas() {
       >
         <ambientLight intensity={0.6} />
         <directionalLight position={[5, 10, 5]} intensity={1.2} color="#ffffff" />
-        <pointLight position={[-5, -5, -5]} intensity={0.8} color="#d4ff00" />
+        <pointLight position={[-5, -5, -5]} intensity={0.8} color="#d4af37" />
         
         <Suspense fallback={null}>
           <CoreGeometry reducedMotion={isReducedMotion} />
