@@ -21,9 +21,9 @@ export function Footer() {
                 key={l.href}
                 href={onHome ? l.href : `/${l.href}`}
                 onClick={(e) => onHome && scrollToHash(l.href) && e.preventDefault()}
-                className="text-[14px] text-cream-muted hover:text-cream"
+                className="w-fit text-[14px] text-cream-muted transition-colors hover:text-cream"
               >
-                {l.label}
+                <span className="link-draw">{l.label}</span>
               </a>
             ))}
           </nav>

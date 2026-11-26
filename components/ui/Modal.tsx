@@ -1,6 +1,7 @@
 "use client";
 
 import React, { useEffect } from "react";
+import { createPortal } from "react-dom";
 import { X } from "lucide-react";
 
 interface ModalProps {
@@ -52,32 +53,36 @@ export function Modal({
     "4xl": "max-w-4xl",
   }[maxWidth];
 
-  return (
+  // Rendered at <body> so the dialog sits above every section and the fixed site navigation
+  // (sections create their own stacking contexts). Only mounted client-side, when open.
+  // Styled with the site's own tokens: sage paper panel, moss header, cream type on moss.
+  return createPortal(
     <div
       role="dialog"
       aria-modal="true"
-      className="fixed inset-0 z-50 flex items-center justify-center p-4 sm:p-6 overflow-y-auto"
+      aria-labelledby="modal-title"
+      className="fixed inset-0 z-50 flex items-center justify-center overflow-y-auto p-3 sm:p-6"
     >
-      {/* Backdrop */}
+      {/* Backdrop: deep moss veil, not black */}
       <div
         onClick={onClose}
-        className="fixed inset-0 bg-black/80 backdrop-blur-md transition-opacity duration-300"
+        className="fixed inset-0 bg-[#141a10]/75 backdrop-blur-sm transition-opacity duration-300"
       />
 
       {/* Dialog Body */}
       <div
-        className={`relative z-10 w-full ${maxWidthClasses} my-8 overflow-hidden rounded-xl border border-white/[0.12] bg-[#0A0F1D] shadow-2xl transition-all`}
+        className={`relative z-10 my-6 w-full ${maxWidthClasses} overflow-hidden rounded-[24px] border border-ink/15 bg-sage-50 text-ink shadow-[0_40px_100px_-40px_rgba(10,14,8,0.65)]`}
         data-lenis-prevent
       >
         {/* Modal Header */}
-        <div className="flex items-center justify-between border-b border-white/[0.08] px-6 py-4 bg-[#060913]/90">
-          <div>
+        <div className="flex items-start justify-between gap-4 bg-moss px-6 py-5 text-cream sm:px-8">
+          <div className="min-w-0">
             {categoryTag && (
-              <span className="font-mono text-[10px] tracking-widest text-[#d4af37] uppercase block mb-1">
+              <span className="eyebrow mb-2 block text-[10px] text-amber">
                 {categoryTag}
               </span>
             )}
-            <h3 className="font-sans text-lg sm:text-xl font-bold text-[#F8FAFC]">
+            <h3 id="modal-title" className="font-serif text-[clamp(24px,3vw,34px)] leading-[1.08] text-cream">
               {title}
             </h3>
           </div>
@@ -85,17 +90,18 @@ export function Modal({
           <button
             onClick={onClose}
             aria-label="Close dialog"
-            className="rounded p-2 text-[#94A3B8] hover:bg-white/[0.05] hover:text-[#d4af37] transition-colors"
+            className="press mt-1 flex h-10 w-10 shrink-0 items-center justify-center rounded-full border border-cream/30 text-cream hover:border-cream hover:bg-cream hover:text-moss"
           >
-            <X size={20} />
+            <X size={18} />
           </button>
         </div>
 
         {/* Modal Scrollable Content */}
-        <div className="max-h-[75vh] overflow-y-auto p-6 sm:p-8 space-y-6">
+        <div className="modal-scroll max-h-[75vh] space-y-6 overflow-y-auto p-6 sm:p-8">
           {children}
         </div>
       </div>
-    </div>
+    </div>,
+    document.body
   );
 }

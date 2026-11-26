@@ -119,7 +119,7 @@ export function ExperienceSection() {
               {d.technologies && (
                 <ul className="stagger relative mt-auto flex flex-wrap gap-2 pt-8">
                   {d.technologies.map((t, k) => (
-                    <li key={t} style={{ "--i": k + 4 } as React.CSSProperties} className="rounded-full border border-ink/25 px-3 py-1 text-[12.5px] text-ink">
+                    <li key={t} style={{ "--i": k + 4, "--accent": "#191d16" } as React.CSSProperties} className="tag rounded-full border border-ink/25 px-3 py-1 text-[12.5px] text-ink">
                       {t}
                     </li>
                   ))}

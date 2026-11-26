@@ -108,9 +108,9 @@ export function CustomCursor() {
       <div
         ref={dotRef}
         aria-hidden="true"
-        className={`pointer-events-none fixed top-0 left-0 z-50 -ml-1 -mt-1 h-2 w-2 rounded-full bg-cream mix-blend-difference transition-opacity duration-200 ${
+        className={`pointer-events-none fixed top-0 left-0 z-[90] -ml-1 -mt-1 h-2 w-2 rounded-full bg-cream mix-blend-difference transition-opacity duration-200 ${
           variant === "hidden" ? "opacity-0" : "opacity-100"
-        } ${variant === "webgl" ? "scale-0" : "scale-100"}`}
+        } ${variant === "webgl" || label ? "scale-0" : "scale-100"}`}
         style={{ willChange: "transform" }}
       />
 
@@ -118,9 +118,15 @@ export function CustomCursor() {
       <div
         ref={followerRef}
         aria-hidden="true"
-        className={`pointer-events-none fixed top-0 left-0 z-50 flex items-center justify-center rounded-full border border-cream/50 mix-blend-difference transition-all duration-300 ease-out ${
+        className={`pointer-events-none fixed top-0 left-0 z-[90] flex items-center justify-center rounded-full transition-all duration-300 ease-out ${
+          label && variant !== "hidden"
+            ? "-ml-10 -mt-10 h-20 w-20 border-0 bg-amber shadow-[0_10px_30px_-10px_rgba(0,0,0,0.5)]"
+            : "border border-cream/50 mix-blend-difference"
+        } ${
           variant === "hidden"
             ? "opacity-0 scale-50"
+            : label
+            ? "scale-100"
             : variant === "hover"
             ? "-ml-5 -mt-5 h-10 w-10 border-cream/70 bg-cream/10 scale-110"
             : variant === "interactive"
@@ -132,7 +138,7 @@ export function CustomCursor() {
         style={{ willChange: "transform" }}
       >
         {label && (
-          <span className="font-mono text-[9px] font-bold tracking-widest text-cream uppercase">
+          <span className="font-mono text-[9.5px] font-bold tracking-widest text-forest uppercase">
             {label}
           </span>
         )}

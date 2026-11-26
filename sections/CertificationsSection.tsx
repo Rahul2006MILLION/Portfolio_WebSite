@@ -8,6 +8,8 @@ import { Chapter, container } from "@/components/ui/Chapter";
 import { CertificateLightbox } from "@/components/certificates/CertificateLightbox";
 import { StatusLabel } from "@/components/certificates/StatusLabel";
 import { Tilt } from "@/components/motion/Tilt";
+import { PanelGlow } from "@/components/motion/PanelGlow";
+import { Magnetic } from "@/components/motion/Magnetic";
 
 const delay = (s: number) => ({ "--reveal-delay": `${s}s` }) as React.CSSProperties;
 
@@ -25,7 +27,9 @@ export function CertificationsSection({ items = certificatesData }: { items?: Ce
       aria-labelledby="certifications-title"
       className="relative z-10 mx-2 px-5 py-28 text-cream sm:mx-4 sm:px-10 sm:py-36 lg:px-16"
     >
-      <div aria-hidden="true" data-panel className="absolute inset-0 -z-10 rounded-[28px] bg-forest sm:rounded-[40px]" />
+      <div aria-hidden="true" data-panel className="absolute inset-0 -z-10 overflow-hidden rounded-[28px] bg-forest sm:rounded-[40px]">
+        <PanelGlow />
+      </div>
       <div className={container}>
         <Chapter
           tone="dark"
@@ -47,7 +51,7 @@ export function CertificationsSection({ items = certificatesData }: { items?: Ce
 
         <ul className="mt-6 grid gap-5 sm:grid-cols-2 lg:grid-cols-3">
           {rest.map((c, i) => (
-            <li key={c.id} data-reveal style={delay(0.07 * i)}>
+            <li key={c.id} data-reveal="scale" style={delay(0.08 * i)}>
               <CertificateCard item={c} onOpen={() => setOpenIndex(ordered.indexOf(c))} />
             </li>
           ))}
@@ -83,6 +87,7 @@ function FeaturedCertificate({ item, onOpen, reverse = false }: { item: Certific
           onClick={onOpen}
           className="relative block w-full overflow-hidden rounded-md shadow-[0_24px_50px_-28px_rgba(25,29,22,0.65)] ring-1 ring-ink/10 transition-transform duration-700 ease-[var(--ease-cinematic)] group-hover:-translate-y-1"
           aria-label={`View certificate: ${item.title}`}
+          data-cursor-label="View"
         >
           <Image
             src={item.preview.thumb}
@@ -90,7 +95,7 @@ function FeaturedCertificate({ item, onOpen, reverse = false }: { item: Certific
             width={900}
             height={Math.round((900 * item.preview.height) / item.preview.width)}
             unoptimized
-            className="h-auto w-full transition-transform duration-[1200ms] ease-[var(--ease-cinematic)] group-hover:scale-[1.015]"
+            className="drift h-auto w-full"
           />
           <span className="eyebrow absolute bottom-3 right-3 rounded-full bg-ink/85 px-3 py-1.5 text-[9.5px] text-cream opacity-0 transition-opacity duration-500 group-hover:opacity-100 focus-visible:opacity-100">
             View certificate
@@ -130,19 +135,21 @@ function FeaturedCertificate({ item, onOpen, reverse = false }: { item: Certific
         </dl>
 
         <div className="mt-auto flex flex-wrap gap-2 pt-8">
-          <button
-            type="button"
-            onClick={onOpen}
-            className={`eyebrow rounded-full bg-ink px-5 py-3 text-[10px] text-cream transition-colors ${accent.hover}`}
-          >
-            View certificate
-          </button>
+          <Magnetic strength={0.2}>
+            <button
+              type="button"
+              onClick={onOpen}
+              className={`press eyebrow rounded-full bg-ink px-5 py-3 text-[10px] text-cream ${accent.hover}`}
+            >
+              View certificate
+            </button>
+          </Magnetic>
           {item.verificationUrl && (
             <a
               href={item.verificationUrl}
               target="_blank"
               rel="noreferrer"
-              className="eyebrow rounded-full border border-ink/25 px-5 py-3 text-[10px] text-ink transition-colors hover:border-ink"
+              className="press eyebrow rounded-full border border-ink/25 px-5 py-3 text-[10px] text-ink hover:border-ink"
             >
               Verify on {item.issuer} ↗
             </a>
@@ -171,7 +178,7 @@ function CertificateCard({ item, onOpen }: { item: CertificateItem; onOpen: () =
         <p className="eyebrow text-[9.5px] leading-relaxed text-cream-muted">{item.issuer}</p>
         <h3 className="mt-3 font-serif text-[24px] leading-[1.1]">
           {/* stretched button: the whole card opens the preview */}
-          <button type="button" onClick={onOpen} className="text-left after:absolute after:inset-0 after:content-['']">
+          <button type="button" onClick={onOpen} data-cursor-label="Open" className="text-left after:absolute after:inset-0 after:content-['']">
             {item.title}
           </button>
         </h3>

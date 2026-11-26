@@ -4,6 +4,8 @@ import React, { useEffect, useState } from "react";
 import Link from "next/link";
 import { usePathname } from "next/navigation";
 import { profileData } from "@/data/profile";
+import { Magnetic } from "@/components/motion/Magnetic";
+import { useActiveSection } from "@/components/motion/useActiveSection";
 
 export const NAV_LINKS = [
   { label: "About", href: "#about", index: "01" },
@@ -37,6 +39,7 @@ export function Navbar() {
   const [open, setOpen] = useState(false);
   const pathname = usePathname();
   const onHome = pathname === "/";
+  const active = useActiveSection(onHome ? QUICK : []);
 
   useEffect(() => {
     const onScroll = () => setScrolled(window.scrollY > 60);
@@ -85,19 +88,23 @@ export function Navbar() {
                   <a
                     href={hrefFor(l.href)}
                     onClick={(e) => go(e, l.href)}
-                    className="eyebrow rounded-full px-3 py-2 text-[10.5px] text-ink-soft transition-colors hover:text-ink"
+                    aria-current={active === l.href ? "true" : undefined}
+                    className="eyebrow mx-3 inline-block py-2 text-[10.5px] text-ink-soft transition-colors hover:text-ink aria-[current=true]:text-ink"
                   >
-                    {l.label}
+                    <span className="link-draw" data-active={active === l.href ? "true" : undefined}>
+                      {l.label}
+                    </span>
                   </a>
                 </li>
               ))}
             </ul>
+            <Magnetic strength={0.25}>
             <button
               type="button"
               onClick={() => setOpen(true)}
               aria-expanded={open}
               aria-controls="site-index"
-              className="eyebrow flex items-center gap-2 rounded-full border border-ink/25 px-3.5 py-2 text-[10.5px] text-ink transition-colors hover:bg-ink hover:text-cream"
+              className="press eyebrow flex items-center gap-2 rounded-full border border-ink/25 px-3.5 py-2 text-[10.5px] text-ink hover:bg-ink hover:text-cream"
             >
               <span aria-hidden="true" className="flex flex-col gap-[3px]">
                 <span className="block h-px w-3.5 bg-current" />
@@ -105,6 +112,7 @@ export function Navbar() {
               </span>
               Index
             </button>
+            </Magnetic>
           </div>
         </nav>
       </header>

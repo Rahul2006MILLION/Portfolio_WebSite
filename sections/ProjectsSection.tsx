@@ -12,6 +12,8 @@ import { Tilt } from "@/components/motion/Tilt";
 import { splitWords } from "@/components/motion/split";
 import { CATEGORY_ACCENT, ProjectVisual } from "@/components/projects/ProjectVisual";
 import { gsap } from "@/lib/animations/gsapConfig";
+import { PanelGlow } from "@/components/motion/PanelGlow";
+import { Magnetic } from "@/components/motion/Magnetic";
 
 const CATEGORIES: ProjectCategory[] = ["All", "AI / ML", "Research", "Robotics", "Software Engineering", "Web Development"];
 
@@ -67,8 +69,10 @@ export function ProjectsSection() {
       <div
         aria-hidden="true"
         data-panel
-        className="absolute inset-0 -z-10 rounded-[28px] bg-forest shadow-[0_-30px_80px_-40px_rgba(10,14,8,0.6)] sm:rounded-[40px]"
-      />
+        className="absolute inset-0 -z-10 overflow-hidden rounded-[28px] bg-forest shadow-[0_-30px_80px_-40px_rgba(10,14,8,0.6)] sm:rounded-[40px]"
+      >
+        <PanelGlow />
+      </div>
       <div className={container}>
         <Chapter
           tone="dark"
@@ -86,7 +90,7 @@ export function ProjectsSection() {
                 type="button"
                 aria-pressed={category === c}
                 onClick={() => setCategory(c)}
-                className={`rounded-full px-4 py-2 text-[13px] transition-colors ${
+                className={`press rounded-full px-4 py-2 text-[13px] ${
                   category === c ? "bg-cream text-forest" : "border border-line-dark text-cream-muted hover:text-cream"
                 }`}
               >
@@ -158,26 +162,28 @@ export function ProjectsSection() {
 
                   <ul className="stagger mt-7 flex flex-wrap gap-1.5">
                     {p.technologies.map((t, k) => (
-                      <li key={t} style={{ "--i": k } as React.CSSProperties} className="rounded-full border border-line-dark px-2.5 py-1 text-[12px] text-cream-muted">
+                      <li key={t} style={{ "--i": k, "--tag-hover": "#f3efe4" } as React.CSSProperties} className="tag rounded-full border border-line-dark px-2.5 py-1 text-[12px] text-cream-muted">
                         {t}
                       </li>
                     ))}
                   </ul>
 
                   <div className="mt-auto flex flex-wrap items-center gap-3 pt-8">
-                    <button
-                      type="button"
-                      onClick={() => setSelected(p)}
-                      className="eyebrow rounded-full bg-cream px-5 py-3 text-[10px] text-forest transition-colors hover:bg-[var(--accent)]"
-                    >
-                      Details ↗
-                    </button>
+                    <Magnetic strength={0.2}>
+                      <button
+                        type="button"
+                        onClick={() => setSelected(p)}
+                        className="press eyebrow rounded-full bg-cream px-5 py-3 text-[10px] text-forest hover:bg-[var(--accent)]"
+                      >
+                        Details ↗
+                      </button>
+                    </Magnetic>
                     {p.githubUrl && (
                       <a
                         href={p.githubUrl}
                         target="_blank"
                         rel="noreferrer"
-                        className="eyebrow inline-flex items-center gap-2 rounded-full border border-line-dark px-5 py-3 text-[10px] text-cream transition-colors hover:border-cream/50"
+                        className="press eyebrow inline-flex items-center gap-2 rounded-full border border-line-dark px-5 py-3 text-[10px] text-cream hover:border-cream/50"
                       >
                         <GithubIcon size={13} /> Repository
                       </a>
@@ -188,11 +194,19 @@ export function ProjectsSection() {
 
                 <div className="relative hidden border-l border-line-dark lg:col-span-5 lg:block">
                   <Tilt max={6} className="spotlight absolute inset-6 rounded-[20px] [--spot:rgba(255,255,255,0.06)]">
-                    <div className="curtain h-full w-full rounded-[20px] bg-[#0f130c]">
-                      <div className="h-full w-full">
+                    <div className="curtain h-full w-full overflow-hidden rounded-[20px] bg-[#0f130c]">
+                      <div className="drift h-full w-full">
                         <ProjectVisual category={p.category} seed={i} />
                       </div>
                     </div>
+                    {/* the visual is a large, cursor-labelled target for the details view */}
+                    <button
+                      type="button"
+                      onClick={() => setSelected(p)}
+                      data-cursor-label="Details"
+                      aria-label={`Open details: ${p.title}`}
+                      className="absolute inset-0 rounded-[20px] focus-visible:outline-offset-4"
+                    />
                   </Tilt>
                 </div>
               </article>
@@ -211,7 +225,7 @@ export function ProjectsSection() {
                   style={{ "--reveal-delay": `${0.06 * (i % 2)}s`, "--accent": CATEGORY_ACCENT[p.category], "--spot": "rgba(255,255,255,0.06)" } as React.CSSProperties}
                 >
                   <Tilt max={4} className="spotlight h-full rounded-2xl border border-line-dark bg-forest-2 transition-colors hover:border-[var(--accent)]/40">
-                    <button type="button" onClick={() => setSelected(p)} className="group flex h-full w-full flex-col gap-2 p-6 text-left">
+                    <button type="button" onClick={() => setSelected(p)} data-cursor-label="Details" className="press group flex h-full w-full flex-col gap-2 p-6 text-left">
                       <span className="eyebrow flex items-center gap-2 text-[9.5px] text-[var(--accent)]">
                         <span aria-hidden="true" className="h-1.5 w-1.5 rounded-full bg-current" />
                         {p.category} · {p.year}
@@ -230,7 +244,7 @@ export function ProjectsSection() {
         )}
 
         <div className="mt-14 flex flex-wrap items-center gap-6" data-reveal>
-          <Link href="/projects" className="eyebrow rounded-full bg-cream px-5 py-3 text-[10.5px] text-forest hover:bg-amber">
+          <Link href="/projects" className="press eyebrow rounded-full bg-cream px-5 py-3 text-[10.5px] text-forest hover:bg-amber">
             All project pages
           </Link>
           <a href="https://github.com/Rahul2006MILLION" target="_blank" rel="noreferrer" className="eyebrow inline-flex items-center gap-2 text-[10.5px] text-cream-muted hover:text-cream">
@@ -239,7 +253,7 @@ export function ProjectsSection() {
         </div>
       </div>
 
-      <ProjectDetailModal project={selected} isOpen={selected !== null} onClose={() => setSelected(null)} />
+      <ProjectDetailModal key={selected?.id ?? "none"} project={selected} isOpen={selected !== null} onClose={() => setSelected(null)} />
     </section>
   );
 }

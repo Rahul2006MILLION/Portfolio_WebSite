@@ -5,6 +5,7 @@ import { profileData } from "@/data/profile";
 import { Chapter, container } from "@/components/ui/Chapter";
 import { GithubIcon, LinkedinIcon } from "@/components/ui/Icons";
 import { Magnetic } from "@/components/motion/Magnetic";
+import { PanelGlow } from "@/components/motion/PanelGlow";
 
 /**
  * There is no backend to deliver messages, so the form composes an email in the visitor's own
@@ -44,6 +45,7 @@ export function ContactSection() {
           <span />
           <span />
         </div>
+        <PanelGlow />
       </div>
       {/* kinetic invitation drifting with the scroll */}
       <div aria-hidden="true" className="pointer-events-none -mx-5 -mt-10 mb-16 overflow-hidden whitespace-nowrap sm:-mx-10 lg:-mx-16">
@@ -89,12 +91,12 @@ export function ContactSection() {
             </dl>
             <div className="flex gap-3">
               <Magnetic strength={0.3}>
-                <a href={profileData.socialLinks.linkedin} target="_blank" rel="noreferrer" className="eyebrow inline-flex items-center gap-2 rounded-full border border-line-dark px-5 py-3 text-[10.5px] transition-colors hover:bg-cream hover:text-forest">
+                <a href={profileData.socialLinks.linkedin} target="_blank" rel="noreferrer" className="press eyebrow inline-flex items-center gap-2 rounded-full border border-line-dark px-5 py-3 text-[10.5px] hover:bg-cream hover:text-forest">
                   <LinkedinIcon size={14} /> LinkedIn
                 </a>
               </Magnetic>
               <Magnetic strength={0.3}>
-                <a href={profileData.socialLinks.github} target="_blank" rel="noreferrer" className="eyebrow inline-flex items-center gap-2 rounded-full border border-line-dark px-5 py-3 text-[10.5px] transition-colors hover:bg-cream hover:text-forest">
+                <a href={profileData.socialLinks.github} target="_blank" rel="noreferrer" className="press eyebrow inline-flex items-center gap-2 rounded-full border border-line-dark px-5 py-3 text-[10.5px] hover:bg-cream hover:text-forest">
                   <GithubIcon size={14} /> GitHub
                 </a>
               </Magnetic>
@@ -121,9 +123,11 @@ export function ContactSection() {
               <textarea name="message" required rows={5} value={form.message} onChange={set} className={`${field} resize-y`} />
             </label>
             <div className="flex flex-wrap items-center gap-5">
-              <button type="submit" className="eyebrow rounded-full bg-cream px-6 py-3.5 text-[10.5px] text-forest transition-colors hover:bg-amber">
-                Compose email ↗
-              </button>
+              <Magnetic strength={0.25}>
+                <button type="submit" className="press eyebrow rounded-full bg-cream px-6 py-3.5 text-[10.5px] text-forest hover:bg-amber">
+                  Compose email ↗
+                </button>
+              </Magnetic>
               <p role="status" aria-live="polite" className="text-[13px] text-cream-muted">
                 {status === "error" && "Please add your name, email and a message."}
                 {status === "opened" && (

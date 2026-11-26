@@ -14,13 +14,18 @@ export function CodingProfilesSection() {
         <Chapter index="09" label="Coding profiles" title={<span id="coding-title">Find me <em className="italic">elsewhere</em>.</span>} />
         <ul className="grid gap-4 md:grid-cols-3">
           {codingProfilesData.map((p, i) => (
-            <li key={p.id} data-reveal style={{ "--reveal-delay": `${0.09 * i}s` } as React.CSSProperties}>
+            <li
+              key={p.id}
+              data-reveal={i === 0 ? "left" : i === codingProfilesData.length - 1 ? "right" : "scale"}
+              style={{ "--reveal-delay": `${0.09 * i}s` } as React.CSSProperties}
+            >
               <Tilt max={6} className="h-full">
               <a
                 href={p.profileUrl}
                 target="_blank"
                 rel="noreferrer"
-                className="spotlight group flex h-full flex-col rounded-[28px] border border-ink/20 p-7 transition-colors duration-500 [--spot:rgba(231,185,111,0.18)] hover:bg-ink hover:text-cream"
+                data-cursor-label="Visit"
+                className="press spotlight group flex h-full flex-col rounded-[28px] border border-ink/20 p-7 transition-colors duration-500 [--spot:rgba(231,185,111,0.18)] hover:bg-ink hover:text-cream"
               >
                 <span className="flex items-baseline justify-between">
                   <span className="font-serif text-[40px] leading-none">{p.platform}</span>
