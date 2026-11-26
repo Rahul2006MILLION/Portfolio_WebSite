@@ -59,12 +59,12 @@ export function AboutSection() {
             {profileData.focusAreas.map((f, i) => (
               <li
                 key={f}
-                className="flex items-baseline gap-5 border-b border-line-light py-4 text-[17px] text-ink"
+                className="group/focus flex items-baseline gap-5 border-b border-line-light py-4 text-[17px] text-ink"
                 data-reveal
                 style={{ "--reveal-delay": `${0.05 * i}s` } as React.CSSProperties}
               >
-                <span className="font-mono text-[11px] text-ink-muted">{String(i + 1).padStart(2, "0")}</span>
-                {f}
+                <span className="font-mono text-[11px] text-ink-muted transition-colors group-hover/focus:text-ink">{String(i + 1).padStart(2, "0")}</span>
+                <span className="transition-transform duration-700 ease-[var(--ease-cinematic)] group-hover/focus:translate-x-2">{f}</span>
               </li>
             ))}
           </ul>

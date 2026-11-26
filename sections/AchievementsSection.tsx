@@ -88,10 +88,11 @@ export function AchievementsSection() {
           <span aria-hidden="true" className="absolute left-[5px] top-0 bottom-0 w-px bg-ink/15 lg:left-[calc(25%-20px)]" />
           <span aria-hidden="true" data-draw="y" className="absolute left-[5px] top-0 bottom-0 w-px origin-top bg-ink lg:left-[calc(25%-20px)]" />
           {rest.map((a) => (
-            <li key={a.id} data-reveal className="group/ach relative grid gap-4 py-10 pl-8 lg:grid-cols-12 lg:gap-10 lg:pl-0">
+            <li key={a.id} data-reveal="left" className="group/ach relative grid gap-4 py-10 pl-8 lg:grid-cols-12 lg:gap-10 lg:pl-0">
+              <span aria-hidden="true" className="pointer-events-none absolute inset-y-3 -right-4 left-4 -z-10 rounded-[24px] bg-sage-50/0 transition-colors duration-500 group-hover/ach:bg-sage-50/35 lg:left-[calc(25%-8px)]" />
               <span
                 aria-hidden="true"
-                className="absolute left-0 top-11 h-[11px] w-[11px] rounded-full border border-ink/50 bg-sage-200 transition-colors delay-300 duration-700 group-[.is-in]/ach:bg-ink lg:left-[calc(25%-25px)]"
+                className="absolute left-0 top-11 h-[11px] w-[11px] rounded-full border border-ink/50 bg-sage-200 transition-[background-color,box-shadow] delay-300 duration-700 group-hover/ach:shadow-[0_0_0_6px_rgba(25,29,22,0.12)] group-hover/ach:delay-0 group-[.is-in]/ach:bg-ink lg:left-[calc(25%-25px)]"
               />
               <div className="eyebrow text-[10px] text-ink-muted lg:col-span-3 lg:pr-10 lg:text-right">
                 {a.categoryLabel}
@@ -103,7 +104,7 @@ export function AchievementsSection() {
                 )}
               </div>
               <div className="lg:col-span-5">
-                <h3 className="font-serif text-[clamp(26px,2.6vw,36px)] leading-[1.08] text-ink">{a.title}</h3>
+                <h3 className="font-serif text-[clamp(26px,2.6vw,36px)] leading-[1.08] text-ink transition-transform duration-700 ease-[var(--ease-cinematic)] group-hover/ach:translate-x-1.5">{a.title}</h3>
                 <p className="mt-2 text-[14px] text-ink-muted">{a.organization}</p>
                 <p className="mt-4 text-[15px] leading-relaxed text-ink-soft">{a.description}</p>
               </div>
@@ -118,7 +119,7 @@ export function AchievementsSection() {
                 ))}
                 {a.proofLink && (
                   <li style={{ "--i": a.keyPoints.length } as React.CSSProperties} className="pt-2">
-                    <a href={a.proofLink} target="_blank" rel="noreferrer" className="eyebrow text-[10.5px] text-ink underline-offset-4 hover:underline">
+                    <a href={a.proofLink} target="_blank" rel="noreferrer" className="link-draw eyebrow text-[10.5px] text-ink">
                       Verify ↗
                     </a>
                   </li>

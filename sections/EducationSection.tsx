@@ -28,7 +28,7 @@ export function EducationSection() {
               >
                 {/* node: rings out once when the milestone arrives */}
                 <span aria-hidden="true" className="absolute left-0 top-1.5 h-[15px] w-[15px] sm:left-[calc(25%)]">
-                  <span className="absolute inset-0 rounded-full border border-ink/40 bg-sage-200" />
+                  <span className="absolute inset-0 rounded-full border border-ink/40 bg-sage-200 transition-transform duration-500 ease-[var(--ease-cinematic)] group-hover/edu:scale-150" />
                   <span
                     className={`absolute inset-[4px] scale-0 rounded-full transition-transform delay-300 duration-700 ease-[var(--ease-cinematic)] group-[.is-in]/edu:scale-100 ${
                       e.status === "In Progress" ? "bg-ink" : "bg-ink/50"
@@ -52,8 +52,8 @@ export function EducationSection() {
                   </span>
                   <span className="mt-1 block normal-case tracking-normal">{e.status}</span>
                 </div>
-                <div className="relative sm:col-span-3 sm:pl-12">
-                  <h3 className="font-serif text-[clamp(28px,3vw,42px)] leading-tight text-ink">{e.institution}</h3>
+                <div className="relative -my-4 rounded-[24px] py-4 transition-colors duration-500 sm:col-span-3 sm:-mx-4 sm:px-4 sm:pl-16 group-hover/edu:bg-sage-50/30">
+                  <h3 className="font-serif text-[clamp(28px,3vw,42px)] leading-tight text-ink transition-transform duration-700 ease-[var(--ease-cinematic)] group-hover/edu:translate-x-1.5">{e.institution}</h3>
                   <p className="mt-2 text-[15px] text-ink-soft">
                     {e.degree}
                     {e.specialization && <> · {e.specialization}</>}
@@ -66,7 +66,7 @@ export function EducationSection() {
                   {e.coursework && (
                     <ul className="stagger mt-5 flex flex-wrap gap-2">
                       {e.coursework.map((c, k) => (
-                        <li key={c} style={{ "--i": k } as React.CSSProperties} className="rounded-full bg-ink/[0.06] px-3 py-1 text-[12.5px] text-ink-soft">
+                        <li key={c} style={{ "--i": k } as React.CSSProperties} className="tag rounded-full border border-transparent bg-ink/[0.06] px-3 py-1 text-[12.5px] text-ink-soft [--accent:rgba(25,29,22,0.35)]">
                           {c}
                         </li>
                       ))}

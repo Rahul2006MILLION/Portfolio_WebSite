@@ -57,14 +57,14 @@ export function ResearchSection() {
                   </div>
                   <ol className="stagger grid gap-8 lg:grid-cols-4 lg:gap-10">
                     {stages.map((st, k) => (
-                      <li key={st.label} style={{ "--i": k * 4 } as React.CSSProperties} className="relative lg:pt-8">
-                        <span aria-hidden="true" className="absolute -top-[5px] left-0 hidden h-[9px] w-[9px] rounded-full bg-ink lg:block" />
+                      <li key={st.label} style={{ "--i": k * 4 } as React.CSSProperties} className="group/stage relative lg:pt-8">
+                        <span aria-hidden="true" className="absolute -top-[5px] left-0 hidden h-[9px] w-[9px] rounded-full bg-ink transition-transform duration-500 ease-[var(--ease-cinematic)] group-hover/stage:scale-[1.8] lg:block" />
                         <p className="eyebrow flex items-center gap-2 text-[9.5px] text-ink-muted">
                           <span className="font-mono">{String(k + 1).padStart(2, "0")}</span> {st.label}
                         </p>
                         <p
                           className={`mt-3 text-[14.5px] leading-relaxed ${
-                            st.label === "Status" ? "rounded-2xl border border-ink/20 bg-sage-50/40 p-4 text-ink" : "text-ink-soft"
+                            st.label === "Status" ? "rounded-2xl border border-ink/20 bg-sage-50/40 p-4 text-ink" : "text-ink-soft transition-colors duration-500 group-hover/stage:text-ink"
                           }`}
                         >
                           {st.text}
@@ -78,8 +78,8 @@ export function ResearchSection() {
                   <h4 className="eyebrow text-[10px] text-ink-muted lg:col-span-3">Findings so far</h4>
                   <ul className="stagger space-y-3 lg:col-span-9">
                     {r.keyFindings.map((f, k) => (
-                      <li key={f} style={{ "--i": k * 2 } as React.CSSProperties} className="flex gap-4 font-serif text-[clamp(19px,1.7vw,24px)] leading-snug text-ink">
-                        <span aria-hidden="true" className="mt-[0.6em] h-px w-6 shrink-0 bg-ink/60" />
+                      <li key={f} style={{ "--i": k * 2 } as React.CSSProperties} className="group/find flex gap-4 font-serif text-[clamp(19px,1.7vw,24px)] leading-snug text-ink">
+                        <span aria-hidden="true" className="mt-[0.6em] h-px w-6 shrink-0 bg-ink/60 transition-[width,background-color] duration-500 ease-[var(--ease-cinematic)] group-hover/find:w-10 group-hover/find:bg-ink" />
                         {f}
                       </li>
                     ))}
@@ -89,7 +89,7 @@ export function ResearchSection() {
                       href={r.githubUrl}
                       target="_blank"
                       rel="noreferrer"
-                      className="eyebrow inline-flex items-center gap-2 rounded-full bg-ink px-4 py-2.5 text-[10px] text-cream transition-transform hover:-translate-y-0.5"
+                      className="press eyebrow inline-flex items-center gap-2 rounded-full bg-ink px-4 py-2.5 text-[10px] text-cream hover:-translate-y-0.5"
                     >
                       <GithubIcon size={13} /> Repository ↗
                     </a>
