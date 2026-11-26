@@ -86,32 +86,32 @@ export const projectsData: ProjectItem[] = [
     reportedNote: "Reported result: Achieved zero collisions in the controlled PyBullet multi-agent simulation test environments (reported simulation result, not a real-world physical guarantee)."
   },
   {
-    id: "proj-04",
-    slug: "llm-uncertainty-classification",
-    title: "LLM Uncertainty Classification & Semantic Entropy",
-    shortDescription: "Feature-based classification framework predicting LLM response epistemic uncertainty via multi-response consistency and semantic clustering.",
-    category: "Research",
+    id: "proj-07",
+    slug: "basket-multi-category-retail-platform",
+    title: "BASKET — Multi-Category Indian Retail Platform",
+    shortDescription: "A multi-category Indian retail platform designed to support product discovery, shopping workflows, authentication and payment integration.",
+    category: "Web Development",
     featured: true,
-    thumbnail: "/images/projects/uncertainty.jpg",
-    problemStatement: "Generative LLMs frequently hallucinate factual assertions without explicit indicators of internal epistemic uncertainty, making automated risk-gating in production pipelines difficult.",
-    solution: "Developed an uncertainty quantification framework that samples multiple model completions per query, clusters semantically equivalent answers using Sentence Transformers, and extracts semantic entropy and dispersion features to categorize prompts into KNOWN, AMBIGUOUS, or UNKNOWN categories with an adaptive fast-path.",
-    contribution: "Built the multi-query Ollama inference pipeline, implemented semantic entropy mathematical calculations, extracted textual similarity matrices, and structured the XGBoost feature pipeline.",
-    technologies: ["Python", "Ollama", "Sentence Transformers", "XGBoost", "NumPy", "Scikit-learn"],
+    thumbnail: "/images/projects/basket.jpg",
+    problemStatement: "Hyper-local Indian retailers selling across groceries, fashion, electronics and beauty need a single storefront that can handle discovery, carts, orders and payments reliably.",
+    solution: "A modular FastAPI (Python) backend on PostgreSQL with SQLAlchemy and Alembic migrations, a Next.js 15 / React 19 storefront styled with Tailwind CSS, Razorpay payments in sandbox (test) mode, and OpenSearch product search that falls back to PostgreSQL full-text search when no search cluster is configured.",
+    contribution: "Developed the relational database schema, built REST API endpoints with Pydantic validation, implemented transactional order processing routines, and configured the frontend client.",
+    technologies: ["Next.js 15", "React 19", "Tailwind CSS", "Python", "FastAPI", "PostgreSQL", "SQLAlchemy", "Alembic", "Razorpay Sandbox", "OpenSearch"],
     keyFeatures: [
-      "Semantic entropy estimation computed over clustered completion embeddings",
-      "Three-tier epistemic taxonomy: KNOWN, AMBIGUOUS, and UNKNOWN queries",
-      "Adaptive fast-path skipping redundant multi-sampling on high-confidence prompts",
-      "Modular feature extraction pipeline integrating length, lexical variance, and embedding dispersion"
+      "Product discovery across multiple retail categories, with OpenSearch search and a PostgreSQL full-text fallback",
+      "Shopping workflows: persistent carts, price quotes, inventory reservations and order processing",
+      "Authentication with Argon2id password hashing and HTTP-only JWT cookies",
+      "Razorpay payment integration in test mode, with server-side capture and webhook signature verification"
     ],
     metrics: [
-      { label: "Taxonomy", value: "3 Categories" },
-      { label: "Embedding", value: "Sentence Transformers" },
-      { label: "Inference", value: "Ollama Local" }
+      { label: "Frontend", value: "Next.js 15 + React 19" },
+      { label: "Backend", value: "FastAPI + PostgreSQL" },
+      { label: "Payments", value: "Razorpay Sandbox" }
     ],
-    githubUrl: "https://github.com/Rahul2006MILLION/LLM-Uncertainty-Classification",
-    status: "Pipeline Implemented (Classifier Not Trained)",
-    year: "2025",
-    reportedNote: "Verification note: The core feature extraction and entropy architecture is fully implemented; the README explicitly notes 'CLASSIFIER NOT TRAINED' pending curated gold-standard annotations. No production accuracy is claimed."
+    githubUrl: "https://github.com/Rahul2006MILLION/Online_Shopping",
+    status: "v1.0 Released · v2.0 In Development",
+    year: "2024",
+    reportedNote: "Status disclosure: Runs locally in sandbox mode — payments use Razorpay test credentials, and the repository documents known limitations (partial multilingual UI, external services required for some features). Not a live production deployment."
   },
   {
     id: "proj-05",
@@ -170,32 +170,32 @@ export const projectsData: ProjectItem[] = [
     reportedNote: "Reported test results: Tested on a curated dataset of 1,356 images; reported 100% precision with 0.00% false acceptance on held-out test data at confidence threshold 0.85 (reported test benchmark, not a universal guarantee)."
   },
   {
-    id: "proj-07",
-    slug: "basket-multi-category-retail-platform",
-    title: "BASKET – Multi-Category Hyperlocal Retail Architecture",
-    shortDescription: "Scalable e-commerce platform with modular catalog separation, transaction management, and payment sandbox integration.",
-    category: "Web Development",
+    id: "proj-04",
+    slug: "llm-uncertainty-classification",
+    title: "LLM Uncertainty Classification & Semantic Entropy",
+    shortDescription: "Feature-based classification framework predicting LLM response epistemic uncertainty via multi-response consistency and semantic clustering.",
+    category: "Research",
     featured: false,
-    thumbnail: "/images/projects/basket.jpg",
-    problemStatement: "Small and medium hyper-local retailers require scalable digital storefronts that support multi-category inventories (groceries, fashion, electronics) with transactional order guarantees.",
-    solution: "Engineered a robust full-stack retail system pairing a Next.js / TypeScript frontend with a high-performance FastAPI and PostgreSQL backend. Integrated SQLAlchemy with Alembic migrations, secure JWT authentication, and Razorpay sandbox payments.",
-    contribution: "Developed the relational database schema, built REST API endpoints with Pydantic validation, implemented transactional order processing routines, and configured the frontend client.",
-    technologies: ["Next.js", "React", "TypeScript", "Tailwind CSS", "FastAPI", "PostgreSQL", "SQLAlchemy", "Alembic", "Razorpay Sandbox"],
+    thumbnail: "/images/projects/uncertainty.jpg",
+    problemStatement: "Generative LLMs frequently hallucinate factual assertions without explicit indicators of internal epistemic uncertainty, making automated risk-gating in production pipelines difficult.",
+    solution: "Developed an uncertainty quantification framework that samples multiple model completions per query, clusters semantically equivalent answers using Sentence Transformers, and extracts semantic entropy and dispersion features to categorize prompts into KNOWN, AMBIGUOUS, or UNKNOWN categories with an adaptive fast-path.",
+    contribution: "Built the multi-query Ollama inference pipeline, implemented semantic entropy mathematical calculations, extracted textual similarity matrices, and structured the XGBoost feature pipeline.",
+    technologies: ["Python", "Ollama", "Sentence Transformers", "XGBoost", "NumPy", "Scikit-learn"],
     keyFeatures: [
-      "Modular product discovery and search across distinct hyper-local retail categories",
-      "Transactional order checkout with inventory validation and rollback protection",
-      "Secure user authentication and token-based session management",
-      "Integrated payment sandbox workflow supporting complete checkout lifecycles"
+      "Semantic entropy estimation computed over clustered completion embeddings",
+      "Three-tier epistemic taxonomy: KNOWN, AMBIGUOUS, and UNKNOWN queries",
+      "Adaptive fast-path skipping redundant multi-sampling on high-confidence prompts",
+      "Modular feature extraction pipeline integrating length, lexical variance, and embedding dispersion"
     ],
     metrics: [
-      { label: "Stack", value: "Next.js + FastAPI" },
-      { label: "Database", value: "PostgreSQL" },
-      { label: "Payments", value: "Razorpay Sandbox" }
+      { label: "Taxonomy", value: "3 Categories" },
+      { label: "Embedding", value: "Sentence Transformers" },
+      { label: "Inference", value: "Ollama Local" }
     ],
-    githubUrl: "https://github.com/Rahul2006MILLION/Online_Shopping",
-    status: "v1.0 Implemented (v2.0 Under Development)",
-    year: "2024",
-    reportedNote: "Implementation note: v1.0 core transactional and shopping flow is implemented; extended v2.0 features remain in active ongoing development as noted in repository roadmap."
+    githubUrl: "https://github.com/Rahul2006MILLION/LLM-Uncertainty-Classification",
+    status: "Pipeline Implemented (Classifier Not Trained)",
+    year: "2025",
+    reportedNote: "Verification note: The core feature extraction and entropy architecture is fully implemented; the README explicitly notes 'CLASSIFIER NOT TRAINED' pending curated gold-standard annotations. No production accuracy is claimed."
   },
   {
     id: "proj-08",

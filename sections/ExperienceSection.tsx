@@ -1,102 +1,142 @@
-import React from "react";
+"use client";
+
+import React, { useEffect, useRef } from "react";
 import { experienceData } from "@/data/experience";
-import { SectionHeader } from "@/components/ui/SectionHeader";
-import { Briefcase, Calendar, MapPin } from "lucide-react";
+import { Chapter, container, sectionPad } from "@/components/ui/Chapter";
+import { gsap } from "@/lib/animations/gsapConfig";
 
+/**
+ * Scroll-driven story. Desktop: the section pins and the internship's deliverables slide past
+ * horizontally as chapters, with a progress line and a live "01 / 03" counter; each panel's
+ * contents cascade in as it enters. Mobile / reduced motion: a vertical story with staggered reveals.
+ */
 export function ExperienceSection() {
+  const pinRef = useRef<HTMLDivElement>(null);
+  const trackRef = useRef<HTMLOListElement>(null);
+  const barRef = useRef<HTMLDivElement>(null);
+  const countRef = useRef<HTMLSpanElement>(null);
+  const x = experienceData[0];
+  const total = x?.deliverables.length ?? 0;
+
+  useEffect(() => {
+    const pin = pinRef.current;
+    const track = trackRef.current;
+    if (!pin || !track) return;
+    const mm = gsap.matchMedia();
+    mm.add("(min-width: 1024px) and (prefers-reduced-motion: no-preference)", () => {
+      // horizontal layout only exists while the pinned animation does (see .h-story in globals.css)
+      pin.classList.add("h-story");
+      const distance = () => Math.max(0, track.scrollWidth - pin.clientWidth);
+      const tween = gsap.to(track, {
+        x: () => -distance(),
+        ease: "none",
+        scrollTrigger: {
+          trigger: pin,
+          start: "top top",
+          end: () => `+=${distance()}`,
+          pin: true,
+          scrub: 0.6,
+          anticipatePin: 1,
+          invalidateOnRefresh: true,
+          onUpdate: (self) => {
+            if (barRef.current) barRef.current.style.transform = `scaleX(${self.progress})`;
+            if (countRef.current) {
+              const n = Math.min(total, Math.floor(self.progress * total) + 1);
+              countRef.current.textContent = String(n).padStart(2, "0");
+            }
+          },
+        },
+      });
+      return () => {
+        tween.scrollTrigger?.kill();
+        pin.classList.remove("h-story");
+      };
+    });
+    return () => mm.revert();
+  }, [total]);
+
+  if (!x) return null;
+
   return (
-    <section id="experience" className="relative py-24 sm:py-32 px-4 sm:px-8 lg:px-16 border-t border-white/[0.06] bg-[#060913]">
-      <div className="mx-auto max-w-[1400px]">
-        <SectionHeader
-          number="03"
-          tag="PROFESSIONAL EXPERIENCE"
-          title="INTERNSHIPS & APPLIED ENGINEERING"
-          description="Real-world machine learning engineering experience developing predictive forecasting pipelines, NLP ticket classifiers, and semantic candidate matching engines."
-          badge="VERIFIED EXPERIENCE"
-        />
+    <section id="experience" className={sectionPad} aria-labelledby="experience-title">
+      <div className={container}>
+        <Chapter index="03" label="Experience" title={<span id="experience-title">Applied work, <em className="italic">shipped</em>.</span>} />
+      </div>
 
-        <div className="space-y-8">
-          {experienceData.map((exp) => (
-            <div
-              key={exp.id}
-              className="rounded-xl border border-white/[0.08] bg-[#0A0F1D] p-6 sm:p-10 transition-colors hover:border-[#d4af37]/40"
-            >
-              {/* Header Telemetry */}
-              <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4 border-b border-white/[0.06] pb-6 mb-8">
-                <div>
-                  <div className="flex items-center gap-2 mb-2 font-mono text-xs text-[#d4af37] uppercase tracking-wider">
-                    <Briefcase size={14} />
-                    <span>{exp.type} {"//"} {exp.company}</span>
-                  </div>
-                  <h3 className="font-sans text-2xl sm:text-3xl font-bold text-white tracking-tight">
-                    {exp.role}
-                  </h3>
-                </div>
-
-                <div className="flex flex-col sm:items-end gap-1.5 font-mono text-xs text-[#94A3B8]">
-                  <span className="flex items-center gap-1.5 text-white font-medium">
-                    <Calendar size={13} className="text-[#d4af37]" />
-                    {exp.period}
-                  </span>
-                  <span className="flex items-center gap-1.5 text-[11px] text-[#64748B]">
-                    <MapPin size={12} />
-                    {exp.location}
-                  </span>
-                </div>
-              </div>
-
-              {/* Summary */}
-              <p className="text-base text-[#94A3B8] leading-relaxed mb-8 font-sans max-w-4xl">
-                {exp.summary}
+      <div ref={pinRef} className="h-story-pin relative">
+        <ol ref={trackRef} className="h-story-track mx-auto flex max-w-[1360px] flex-col gap-6 px-5 sm:px-10 lg:px-16">
+          {/* opening panel: the role */}
+          <li
+            className="h-story-intro relative flex flex-col justify-between rounded-[28px] bg-ink p-8 text-cream sm:p-10"
+            data-reveal
+          >
+            <div className="stagger">
+              <p style={{ "--i": 0 } as React.CSSProperties} className="eyebrow text-[10px] text-amber">
+                {x.period} · {x.type} · {x.location}
               </p>
-
-              {/* Deliverables Grid */}
-              <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
-                {exp.deliverables.map((item, idx) => (
-                  <div
-                    key={idx}
-                    className="flex flex-col justify-between rounded-lg border border-white/[0.06] bg-[#060913] p-6 hover:border-[#d4af37]/30 transition-colors"
-                  >
-                    <div>
-                      <div className="flex items-center justify-between font-mono text-xs text-[#d4af37] uppercase mb-3">
-                        <span className="font-bold">DELIVERABLE 0{idx + 1}</span>
-                        <span className="h-1.5 w-1.5 rounded-full bg-[#d4af37]" />
-                      </div>
-
-                      <h4 className="font-sans text-lg font-bold text-white mb-2">
-                        {item.title}
-                      </h4>
-
-                      <p className="text-xs sm:text-sm text-[#94A3B8] leading-relaxed mb-4">
-                        {item.description}
-                      </p>
-                    </div>
-
-                    <div className="pt-4 border-t border-white/[0.04]">
-                      {item.metrics && (
-                        <div className="rounded border border-[#d4af37]/20 bg-[#d4af37]/5 px-3 py-1.5 mb-3 font-mono text-[11px] text-[#e5c158] font-semibold">
-                          {item.metrics}
-                        </div>
-                      )}
-
-                      {item.technologies && (
-                        <div className="flex flex-wrap gap-1">
-                          {item.technologies.map((t) => (
-                            <span
-                              key={t}
-                              className="rounded-sm border border-white/[0.06] bg-white/[0.02] px-2 py-0.5 font-mono text-[10px] text-[#94A3B8]"
-                            >
-                              {t}
-                            </span>
-                          ))}
-                        </div>
-                      )}
-                    </div>
-                  </div>
-                ))}
-              </div>
+              <h3 style={{ "--i": 1 } as React.CSSProperties} className="mt-6 font-serif text-[clamp(36px,4vw,60px)] leading-[0.98]">
+                {x.role}
+              </h3>
+              <p style={{ "--i": 2 } as React.CSSProperties} className="mt-3 text-lg text-cream-muted">
+                {x.company}
+              </p>
             </div>
+            <p className="mt-10 text-[15px] leading-relaxed text-cream-muted">{x.summary}</p>
+            <p aria-hidden="true" className="h-story-hint eyebrow mt-8 hidden items-center gap-3 text-[9.5px] text-cream-muted">
+              Scroll to follow the work <span className="inline-block animate-[float-y_2s_ease-in-out_infinite]">→</span>
+            </p>
+          </li>
+
+          {x.deliverables.map((d, i) => (
+            <li
+              key={d.title}
+              className="h-story-panel spotlight relative flex flex-col overflow-hidden rounded-[28px] border border-ink/15 bg-sage-50/50 p-8 backdrop-blur-[2px] sm:p-10"
+              data-reveal
+              style={{ "--spot": "rgba(25,29,22,0.07)" } as React.CSSProperties}
+            >
+              <span
+                aria-hidden="true"
+                className="pointer-events-none absolute -right-4 -top-10 select-none font-serif text-[200px] leading-none text-ink/[0.07] text-outline"
+              >
+                {String(i + 1).padStart(2, "0")}
+              </span>
+              <div className="stagger relative">
+                <p style={{ "--i": 0 } as React.CSSProperties} className="eyebrow text-[10px] text-ink-muted">
+                  Deliverable {String(i + 1).padStart(2, "0")} / {String(total).padStart(2, "0")}
+                </p>
+                <h4 style={{ "--i": 1 } as React.CSSProperties} className="mt-5 max-w-[16ch] font-serif text-[clamp(30px,3vw,46px)] leading-[1.02] text-ink">
+                  {d.title}
+                </h4>
+                <p style={{ "--i": 2 } as React.CSSProperties} className="mt-5 max-w-[56ch] text-[15px] leading-relaxed text-ink-soft">
+                  {d.description}
+                </p>
+                {d.metrics && (
+                  <p style={{ "--i": 3 } as React.CSSProperties} className="mt-6 inline-block rounded-2xl bg-ink px-4 py-2.5 font-mono text-[12px] text-cream">
+                    {d.metrics}
+                  </p>
+                )}
+              </div>
+              {d.technologies && (
+                <ul className="stagger relative mt-auto flex flex-wrap gap-2 pt-8">
+                  {d.technologies.map((t, k) => (
+                    <li key={t} style={{ "--i": k + 4 } as React.CSSProperties} className="rounded-full border border-ink/25 px-3 py-1 text-[12.5px] text-ink">
+                      {t}
+                    </li>
+                  ))}
+                </ul>
+              )}
+            </li>
           ))}
+        </ol>
+
+        {/* progress (desktop pinned mode only) */}
+        <div aria-hidden="true" className="h-story-progress mx-auto mt-10 hidden w-full max-w-[1360px] items-center gap-5 px-10">
+          <span className="font-mono text-[11px] text-ink">
+            <span ref={countRef}>01</span> / {String(total).padStart(2, "0")}
+          </span>
+          <span className="relative h-px flex-1 bg-ink/15">
+            <span ref={barRef} className="absolute inset-0 origin-left scale-x-0 bg-ink" />
+          </span>
         </div>
       </div>
     </section>

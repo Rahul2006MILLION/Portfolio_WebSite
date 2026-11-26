@@ -1,6 +1,21 @@
 import { AchievementItem } from "@/types/portfolio";
+import { LEETCODE_SOLVED_TOKEN } from "@/lib/leetcode/token";
 
 export const achievementsData: AchievementItem[] = [
+  {
+    id: "ach-visionx-2026-excellence",
+    categoryLabel: "PROJECT EXPO · TEAM AWARD",
+    title: "Certificate of Excellence — VisionX 2026",
+    organization: "Dept. of CSE (AI & ML), School of Engineering, Dayananda Sagar University",
+    period: "November 23, 2026",
+    description: "Our team's project was adjudged the best in its evaluation panel at VisionX 2026, the department's IPCV (Image Processing and Computer Vision) Project Expo.",
+    keyPoints: [
+      "Team award, shared by a four-member team that included N. P. Rahul Jain",
+      "Excellence Award: best project in its evaluation panel",
+      "B.Tech CSE (AI & ML), Semester V — certificate shown under Certifications & Learning"
+    ],
+    badge: "TEAM EXCELLENCE AWARD"
+  },
   {
     id: "ach-leetcode-100",
     categoryLabel: "COMPETITIVE PROGRAMMING",
@@ -10,7 +25,7 @@ export const achievementsData: AchievementItem[] = [
     description: "Awarded the official 100 Days Badge on LeetCode for disciplined daily algorithmic problem solving across data structures and computational paradigms.",
     keyPoints: [
       "Awarded official LeetCode 100 Days continuous consistency badge",
-      "Historical milestone: 146 problems solved (reported historical count across arrays, trees, dynamic programming, and graphs)",
+      `${LEETCODE_SOLVED_TOKEN} across arrays, trees, dynamic programming, and graphs (live count from LeetCode)`,
       "Continuous algorithmic optimization practice in Python and C++"
     ],
     badge: "100 DAYS BADGE",

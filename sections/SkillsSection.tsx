@@ -2,143 +2,111 @@
 
 import React, { useState } from "react";
 import { skillCategoriesData } from "@/data/skills";
-import { SectionHeader } from "@/components/ui/SectionHeader";
-import { Search } from "lucide-react";
+import { Chapter, container, sectionPad } from "@/components/ui/Chapter";
+import { CountUp } from "@/components/motion/CountUp";
+import { Tilt } from "@/components/motion/Tilt";
 
+/**
+ * Skills as an interactive field:
+ *  - a kinetic belt of every skill name drifts in opposite directions as you scroll
+ *  - hovering a group spotlights it (cursor light) and quiets the others
+ *  - pills cascade in; hovering one reveals its documented tag in the group caption
+ *    (tags come from data/skills.ts — no invented proficiency levels)
+ */
 export function SkillsSection() {
-  const [selectedCategory, setSelectedCategory] = useState<string>("all");
-  const [searchQuery, setSearchQuery] = useState<string>("");
-
-  const filteredCategories = skillCategoriesData
-    .filter((cat) => (selectedCategory === "all" ? true : cat.id === selectedCategory))
-    .map((cat) => ({
-      ...cat,
-      skills: cat.skills.filter((skill) =>
-        searchQuery.trim() === ""
-          ? true
-          : skill.name.toLowerCase().includes(searchQuery.toLowerCase()) ||
-            (skill.levelTag && skill.levelTag.toLowerCase().includes(searchQuery.toLowerCase()))
-      ),
-    }))
-    .filter((cat) => cat.skills.length > 0);
+  const all = skillCategoriesData.flatMap((g) => g.skills.map((s) => s.name));
+  const half = Math.ceil(all.length / 2);
+  const rows = [all.slice(0, half), all.slice(half)];
 
   return (
-    <section id="skills" className="relative py-24 sm:py-32 px-4 sm:px-8 lg:px-16 border-t border-white/[0.06] bg-[#060913]">
-      <div className="mx-auto max-w-[1400px]">
-        <SectionHeader
-          number="04"
-          tag="TECHNICAL CAPABILITIES"
-          title="ENGINEERING & MACHINE LEARNING SKILLS"
-          description="Organized catalog of programming languages, deep learning frameworks, databases, and systems competencies verified across real-world projects."
+    <section id="skills" className={`${sectionPad} overflow-hidden`} aria-labelledby="skills-title">
+      <div className={container}>
+        <Chapter
+          index="04"
+          label="Skills"
+          title={<span id="skills-title">The <em className="italic">toolkit</em>.</span>}
+          intro="Filled pills are the tools I use most and can go deepest on. Hover any skill to see where it fits."
         />
+      </div>
 
-        {/* Filter Bar & Quick Search */}
-        <div className="flex flex-col lg:flex-row lg:items-center justify-between gap-4 mb-10 pb-6 border-b border-white/[0.06]">
-          {/* Category Tabs */}
-          <div className="flex flex-wrap items-center gap-1.5 font-mono text-xs">
-            <button
-              type="button"
-              onClick={() => setSelectedCategory("all")}
-              className={`rounded-sm px-3 py-1.5 uppercase tracking-wider transition-all ${
-                selectedCategory === "all"
-                  ? "bg-[#d4af37] text-[#060913] font-bold"
-                  : "border border-white/[0.08] bg-[#0A0F1D] text-[#94A3B8] hover:text-white"
-              }`}
-            >
-              ALL GROUPS (06)
-            </button>
-            {skillCategoriesData.map((cat) => (
-              <button
-                key={cat.id}
-                type="button"
-                onClick={() => setSelectedCategory(cat.id)}
-                className={`rounded-sm px-3 py-1.5 uppercase tracking-wider transition-all ${
-                  selectedCategory === cat.id
-                    ? "bg-[#d4af37] text-[#060913] font-bold"
-                    : "border border-white/[0.08] bg-[#0A0F1D] text-[#94A3B8] hover:text-white"
-                }`}
-              >
-                {cat.categoryNumber} {"//"} {cat.title}
-              </button>
-            ))}
-          </div>
-
-          {/* Search Box */}
-          <div className="relative max-w-xs w-full">
-            <Search size={14} className="absolute left-3 top-1/2 -translate-y-1/2 text-[#94A3B8]" />
-            <input
-              type="text"
-              value={searchQuery}
-              onChange={(e) => setSearchQuery(e.target.value)}
-              placeholder="Search skill (e.g. PyTorch, FastAPI)..."
-              className="w-full rounded-sm border border-white/[0.1] bg-[#0A0F1D] py-2 pl-9 pr-3 font-mono text-xs text-white placeholder-[#64748B] focus:border-[#d4af37] focus:outline-none transition-colors"
-            />
-          </div>
-        </div>
-
-        {/* Categorized Skills Grid */}
-        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
-          {filteredCategories.map((group) => (
+      {/* kinetic belt */}
+      <div aria-hidden="true" className="relative -mx-5 mb-20 select-none space-y-2 sm:-mx-10 lg:-mx-16">
+        {rows.map((row, r) => (
+          <div key={r} className="overflow-hidden whitespace-nowrap">
             <div
-              key={group.id}
-              className="rounded-xl border border-white/[0.08] bg-[#0A0F1D] p-6 flex flex-col justify-between hover:border-[#d4af37]/30 transition-colors shadow-lg shadow-black/20"
+              data-scrub-x={r === 0 ? "-28" : "28"}
+              className={`inline-block font-serif text-[clamp(44px,7vw,110px)] leading-[1.05] ${r === 0 ? "text-ink/80" : "-translate-x-[28%] text-ink/30 text-outline"}`}
             >
-              <div>
-                {/* Group Header */}
-                <div className="flex items-center justify-between border-b border-white/[0.04] pb-3 mb-4">
-                  <div className="flex items-center gap-2">
-                    <span className="font-mono text-xs text-[#d4af37] font-bold">
-                      {group.categoryNumber}
-                    </span>
-                    <h3 className="font-sans text-lg font-bold text-white uppercase tracking-tight">
-                      {group.title}
-                    </h3>
-                  </div>
-                  <span className="font-mono text-[10px] text-[#64748B]">
-                    {group.skills.length} SKILLS
-                  </span>
-                </div>
-
-                <p className="text-xs text-[#94A3B8] leading-relaxed mb-5 font-sans">
-                  {group.description}
-                </p>
-
-                {/* Skill Chips */}
-                <div className="space-y-2">
-                  {group.skills.map((skill) => (
-                    <div
-                      key={skill.name}
-                      className="flex items-center justify-between rounded border border-white/[0.04] bg-[#060913] px-3 py-2 text-xs hover:border-white/[0.12] transition-colors"
-                    >
-                      <div className="flex items-center gap-2">
-                        {skill.isKeySkill ? (
-                          <span className="h-1.5 w-1.5 rounded-full bg-[#d4af37]" />
-                        ) : (
-                          <span className="h-1.5 w-1.5 rounded-full bg-[#64748B]" />
-                        )}
-                        <span className="font-mono text-[#F8FAFC] font-medium">
-                          {skill.name}
-                        </span>
-                      </div>
-                      {skill.levelTag && (
-                        <span className="font-mono text-[10px] text-[#94A3B8] uppercase">
-                          {skill.levelTag}
-                        </span>
-                      )}
-                    </div>
-                  ))}
-                </div>
-              </div>
-
-              {/* Telemetry Footer */}
-              <div className="mt-6 pt-3 border-t border-white/[0.04] flex items-center justify-between font-mono text-[10px] text-[#64748B] uppercase">
-                <span>VERIFIED STACK</span>
-                <span>PRODUCTION TESTED</span>
-              </div>
+              {[...row, ...row].map((name, k) => (
+                <span key={k} className="mx-[0.35em]">
+                  {name}
+                  <span className="mx-[0.35em] text-amber-deep/60">✦</span>
+                </span>
+              ))}
             </div>
+          </div>
+        ))}
+      </div>
+
+      <div className={container}>
+        <div className="grid gap-5 md:grid-cols-2 xl:grid-cols-3 [&:has(.skill-group:hover)_.skill-group:not(:hover)]:opacity-45">
+          {skillCategoriesData.map((g, i) => (
+            <SkillGroup key={g.id} group={g} delay={0.06 * (i % 3)} />
           ))}
         </div>
       </div>
     </section>
+  );
+}
+
+function SkillGroup({ group: g, delay }: { group: (typeof skillCategoriesData)[number]; delay: number }) {
+  const [focus, setFocus] = useState<{ name: string; tag?: string } | null>(null);
+  return (
+    <div data-reveal style={{ "--reveal-delay": `${delay}s` } as React.CSSProperties}>
+      <Tilt
+        max={3}
+        className="skill-group spotlight h-full rounded-[24px] border border-ink/15 bg-sage-50/35 p-6 transition-[opacity,transform] duration-500 sm:p-7"
+      >
+        <div className="flex items-baseline justify-between gap-4">
+          <h3 className="font-serif text-[28px] leading-tight text-ink">{g.title}</h3>
+          <span className="font-mono text-[11px] text-ink-muted">{g.categoryNumber}</span>
+        </div>
+        <p className="mt-2 text-[14px] leading-relaxed text-ink-muted">{g.description}</p>
+        <ul className="stagger mt-5 flex flex-wrap gap-2" onMouseLeave={() => setFocus(null)}>
+          {g.skills.map((s, k) => (
+            <li key={s.name} style={{ "--i": k } as React.CSSProperties}>
+              <button
+                type="button"
+                onMouseEnter={() => setFocus({ name: s.name, tag: s.levelTag })}
+                onFocus={() => setFocus({ name: s.name, tag: s.levelTag })}
+                onBlur={() => setFocus(null)}
+                className={`rounded-full px-3 py-1.5 text-[13px] transition-[transform,background-color,color,box-shadow] duration-300 hover:-translate-y-0.5 focus-visible:-translate-y-0.5 ${
+                  s.isKeySkill
+                    ? "bg-ink text-cream hover:shadow-[0_8px_20px_-10px_rgba(25,29,22,0.7)]"
+                    : "border border-ink/30 text-ink hover:border-ink hover:bg-ink/[0.06]"
+                }`}
+              >
+                {s.name}
+              </button>
+            </li>
+          ))}
+        </ul>
+        <div className="mt-6 flex min-h-[2.75rem] items-center justify-between border-t border-ink/15 pt-4 text-[12.5px]" aria-live="polite">
+          <span className="truncate text-ink-soft">
+            {focus ? (
+              <>
+                <span className="text-ink">{focus.name}</span>
+                {focus.tag && <span className="text-ink-muted"> — {focus.tag}</span>}
+              </>
+            ) : (
+              <span className="text-ink-muted">Hover a skill</span>
+            )}
+          </span>
+          <span className="eyebrow shrink-0 text-[9.5px] text-ink-muted">
+            <CountUp value={g.skills.length} /> tools
+          </span>
+        </div>
+      </Tilt>
+    </div>
   );
 }

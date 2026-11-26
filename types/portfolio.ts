@@ -150,3 +150,30 @@ export interface CodingProfileItem {
   highlightColor?: string;
   isConfigurable?: boolean;
 }
+
+export type CertificateStatus = "Completed" | "Participation" | "Award";
+
+export interface CertificateItem {
+  id: string;
+  title: string;
+  /** organisation that issued / awarded the certificate */
+  issuer: string;
+  /** e.g. "Authorized by DeepLearning.AI and Stanford Online", exactly as the document states */
+  authority?: string;
+  /** human-readable date as printed on the certificate */
+  date: string;
+  /** ISO date (YYYY-MM-DD) of the certificate, for sorting and <time> */
+  isoDate: string;
+  description: string;
+  status: CertificateStatus;
+  /** facts printed on the certificate (duration, score, credits, ...) */
+  details: Array<{ label: string; value: string }>;
+  /** the original, unmodified document as uploaded (served from /public) */
+  original: { href: string; type: "pdf" | "image" };
+  /** full-size image used in the lightbox (a render of the PDF, or the original image itself) and a card thumbnail */
+  preview: { full: string; thumb: string; width: number; height: number };
+  verificationUrl?: string;
+  featured: boolean;
+  /** featured-card treatment: the eyebrow label and a quiet accent colour */
+  highlight?: { label: string; accent: "cardinal" | "evergreen" };
+}

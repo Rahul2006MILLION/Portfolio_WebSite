@@ -16,14 +16,14 @@ export default function ProjectsPage() {
   return (
     <>
       <Navbar />
-      <main className="flex-1 pt-24 bg-[#060913]">
-        <div className="mx-auto max-w-[1400px] px-4 sm:px-8 lg:px-16 pt-8 pb-4">
+      <main id="main" className="flex-1 pt-28">
+        <div className="mx-auto max-w-[1360px] px-5 pb-8 sm:px-10 lg:px-16">
           <Link
             href="/"
-            className="inline-flex items-center gap-2 font-mono text-xs text-[#94A3B8] hover:text-[#d4af37] transition-colors uppercase tracking-wider"
+            className="eyebrow inline-flex items-center gap-2 text-[10.5px] text-ink hover:underline"
           >
             <ArrowLeft size={14} />
-            <span>RETURN TO MAIN PORTFOLIO</span>
+            <span>Back to portfolio</span>
           </Link>
         </div>
         <ProjectsSection />

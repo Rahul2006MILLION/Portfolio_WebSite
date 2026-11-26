@@ -1,4 +1,5 @@
 import React, { type ReactNode } from "react";
+import { RevealObserver } from "@/components/motion/RevealObserver";
 
 interface ShellProps {
   children: ReactNode;
@@ -6,47 +7,16 @@ interface ShellProps {
 
 export function Shell({ children }: ShellProps) {
   return (
-    <div className="relative min-h-[100dvh] w-full bg-[#060913] text-[#F8FAFC] selection:bg-[#d4af37] selection:text-[#060913]">
-      {/* Viewport Frame Guides (F1 Telemetry / Aerospace precision hairlines) */}
-      <div
-        aria-hidden="true"
-        className="pointer-events-none fixed inset-0 z-20 flex justify-between px-4 sm:px-8 md:px-12 lg:px-16"
-      >
-        {/* Left vertical guide rule */}
-        <div className="h-full w-[1px] bg-white/[0.04]" />
-        {/* Center alignment guide rule */}
-        <div className="hidden h-full w-[1px] bg-white/[0.02] xl:block" />
-        {/* Right vertical guide rule */}
-        <div className="h-full w-[1px] bg-white/[0.04]" />
-      </div>
-
-      {/* Top and bottom subtle registration marks */}
-      <div
-        aria-hidden="true"
-        className="pointer-events-none fixed inset-x-0 top-0 z-20 flex justify-between px-6 pt-3 font-mono text-[9px] tracking-widest text-[#464B55] uppercase select-none"
-      >
-        <span>SYS // CALIBRATED</span>
-        <span className="hidden md:inline">LAT 28°36&apos;N · LNG 77°12&apos;E</span>
-        <span>INDEX // 01</span>
-      </div>
-
-      {/* Subtle bottom telemetry border */}
-      <div
-        aria-hidden="true"
-        className="pointer-events-none fixed inset-x-0 bottom-0 z-20 flex justify-between border-t border-white/[0.04] bg-[#060913]/85 px-6 py-2.5 font-mono text-[9px] tracking-widest text-[#64748B] uppercase backdrop-blur-sm select-none"
-      >
-        <span className="flex items-center gap-2">
-          <span className="h-1.5 w-1.5 rounded-full bg-[#d4af37]/80 animate-pulse" />
-          SYSTEM TELEMETRY // ACTIVE
-        </span>
-        <span className="hidden sm:inline">N. P. RAHUL JAIN // PORTFOLIO</span>
-        <span>INDEX // 2024–2028</span>
-      </div>
-
-      {/* Main content slot */}
-      <div className="relative z-10 flex min-h-[100dvh] flex-col">
-        {children}
-      </div>
+    // Layer order: page background (body) → grain (z 0) → vignette (z 1) → content (z 10).
+    // No `isolate` here on purpose: the grain must multiply with the body's sage background.
+    <div className="relative min-h-[100dvh] w-full text-ink">
+      <a href="#main" className="skip-link">
+        Skip to content
+      </a>
+      <div aria-hidden="true" className="grain" />
+      <div aria-hidden="true" className="vignette" />
+      <RevealObserver />
+      <div className="relative z-10 flex min-h-[100dvh] flex-col">{children}</div>
     </div>
   );
 }

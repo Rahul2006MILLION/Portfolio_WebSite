@@ -25,7 +25,9 @@ export function Modal({
       if (e.key === "Escape") onClose();
     };
 
+    const lenis = (window as unknown as { __lenis?: { stop: () => void; start: () => void } }).__lenis;
     if (isOpen) {
+      lenis?.stop();
       document.body.style.overflow = "hidden";
       window.addEventListener("keydown", handleKeyDown);
     } else {
@@ -33,6 +35,7 @@ export function Modal({
     }
 
     return () => {
+      lenis?.start();
       document.body.style.overflow = "";
       window.removeEventListener("keydown", handleKeyDown);
     };
