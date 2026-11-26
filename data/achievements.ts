@@ -13,7 +13,8 @@ export const achievementsData: AchievementItem[] = [
       "Historical milestone: 146 problems solved (reported historical count across arrays, trees, dynamic programming, and graphs)",
       "Continuous algorithmic optimization practice in Python and C++"
     ],
-    badge: "100 DAYS BADGE"
+    badge: "100 DAYS BADGE",
+    proofLink: "https://leetcode.com/u/RySCledatk/"
   },
   {
     id: "ach-class-representative",

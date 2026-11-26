@@ -27,7 +27,7 @@ export const profileData: ProfileData = {
   socialLinks: {
     github: "https://github.com/Rahul2006MILLION",
     linkedin: "https://linkedin.com/in/rahul-jain-437a06322",
-    leetcode: "https://leetcode.com/Rahul2006MILLION", // Configurable handle
+    leetcode: "https://leetcode.com/u/RySCledatk/",
     email: "mailto:rahulpraveena2006@gmail.com",
     universityEmail: "mailto:eng24am0228@dsu.edu.in",
   },
