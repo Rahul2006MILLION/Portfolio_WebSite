@@ -1,33 +1,45 @@
 @import "tailwindcss";
 
 @theme {
+  /* Sage paper palette (opening screen + light sections) */
+  --color-sage-50: #c3c7b2;
+  --color-sage-100: #b2b79f;
+  --color-sage-200: #a4ab90;
+  --color-sage-300: #969c83;
+  --color-sage-400: #868c74;
+  --color-sage-600: #5d6352;
+  --color-moss: #3b4234;
+  /* Ink on sage (passes WCAG AA for body text on every sage tone above) */
+  --color-ink: #191d16;
+  --color-ink-soft: #1f241b;
+  --color-ink-muted: #2a3025;
+  /* Cream on dark (and over the jacket in the hero) */
+  --color-cream: #f3efe4;
+  --color-cream-muted: #c9c6b9;
+  /* Dark panels */
+  --color-forest: #12170f;
+  --color-forest-2: #1a2016;
+  --color-line-dark: rgba(243, 239, 228, 0.12);
+  --color-line-light: rgba(25, 29, 22, 0.16);
+  /* Accent: warm amber from the rim light on the character */
+  --color-amber: #e7b96f;
+  --color-amber-deep: #8a5a16;
+
+  /* Legacy tokens kept for the existing project detail views */
   --color-bg-void: #060913;
-  --color-bg-surface: #0a0f1d;
-  --color-bg-elevated: #10172a;
-  --color-bg-overlay: rgba(10, 15, 29, 0.88);
-
-  --color-text-primary: #f8fafc;
-  --color-text-muted: #94a3b8;
-  --color-text-dim: #64748b;
-  
   --color-accent-gold: #d4af37;
-  --color-accent-gold-light: #e5c158;
-  --color-accent-gold-muted: rgba(212, 175, 55, 0.12);
-
-  --color-border-subtle: rgba(255, 255, 255, 0.07);
-  --color-border-medium: rgba(255, 255, 255, 0.12);
-  --color-border-active: rgba(212, 175, 55, 0.35);
 
   --font-sans: var(--font-geist-sans), -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
   --font-mono: var(--font-geist-mono), ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, monospace;
+  --font-serif: var(--font-instrument-serif), "Iowan Old Style", Georgia, serif;
 
   --ease-cinematic: cubic-bezier(0.16, 1, 0.3, 1);
   --ease-snappy: cubic-bezier(0.25, 1, 0.5, 1);
 }
 
 :root {
-  --background: #060913;
-  --foreground: #f8fafc;
+  --background: #9ca288;
+  --foreground: #191d16;
 }
 
 * {
@@ -46,82 +58,393 @@ html {
 body {
   min-height: 100dvh;
   overflow-x: hidden;
-  background-color: var(--background);
-  color: var(--foreground);
   margin: 0;
   padding: 0;
-  cursor: default;
+  color: var(--foreground);
+  /* Muted sage with a soft warm key light from the left, darker on the right (matches the
+     reference's lit-backdrop falloff); the grain layer sits on top of this. */
+  background-color: var(--background);
+  background-image:
+    radial-gradient(120% 90% at 12% 78%, rgba(206, 203, 170, 0.55) 0%, rgba(206, 203, 170, 0) 55%),
+    radial-gradient(90% 70% at 22% 18%, rgba(190, 198, 168, 0.45) 0%, rgba(190, 198, 168, 0) 60%),
+    linear-gradient(100deg, #a7ad92 0%, #9ea489 45%, #959a82 100%);
+  background-attachment: fixed;
 }
 
-/* Custom Selection */
+/* Paper grain: multiply-blended speckle + fibre tile, re-seeded about once a second */
+/* Background-only grain: it sits in the backdrop layer (z 0, under the vignette and under the
+   z-10 content layer), so it multiplies with the sage page background only — never with text,
+   images, cards or panels drawn above it. */
+.grain {
+  position: fixed;
+  inset: -50%;
+  z-index: 0;
+  pointer-events: none;
+  background-image: url("/textures/grain.png");
+  background-size: 256px 256px;
+  mix-blend-mode: multiply;
+  opacity: 0.55;
+  animation: grain-shift 3s steps(3) infinite;
+}
+
+@keyframes grain-shift {
+  0% { transform: translate3d(0, 0, 0); }
+  33% { transform: translate3d(-97px, 61px, 0); }
+  66% { transform: translate3d(53px, -113px, 0); }
+  100% { transform: translate3d(0, 0, 0); }
+}
+
+/* Soft vignette that gives the flat backdrop some depth */
+.vignette {
+  position: fixed;
+  inset: 0;
+  z-index: 1;
+  pointer-events: none;
+  background:
+    radial-gradient(130% 100% at 50% 40%, rgba(0, 0, 0, 0) 55%, rgba(30, 36, 26, 0.28) 100%);
+}
+
 ::selection {
-  background-color: #d4af37;
-  color: #060913;
+  background-color: #191d16;
+  color: #f3efe4;
 }
 
-/* Smooth Scrolling container */
-html.lenis, html.lenis body {
+/* Lenis */
+html.lenis,
+html.lenis body {
   height: auto;
 }
-
 .lenis.lenis-smooth {
   scroll-behavior: auto !important;
 }
-
 .lenis.lenis-smooth [data-lenis-prevent] {
   overscroll-behavior: contain;
 }
-
 .lenis.lenis-stopped {
   overflow: hidden;
 }
-
 .lenis.lenis-scrolling iframe {
   pointer-events: none;
 }
 
-/* Focus styles for accessible keyboard navigation */
 :focus-visible {
-  outline: 2px solid #d4af37;
-  outline-offset: 2px;
+  outline: 2px solid currentColor;
+  outline-offset: 3px;
 }
 
-/* Technical typography & HUD utilities */
-.font-technical {
+.skip-link {
+  position: fixed;
+  left: 16px;
+  top: -100px;
+  z-index: 100;
+  background: #191d16;
+  color: #f3efe4;
+  padding: 10px 14px;
+  border-radius: 999px;
+  font-size: 13px;
+}
+.skip-link:focus {
+  top: 16px;
+}
+
+/* Small uppercase meta label */
+.eyebrow {
   font-family: var(--font-mono);
+  font-size: 11px;
+  letter-spacing: 0.22em;
   text-transform: uppercase;
-  letter-spacing: 0.08em;
-  font-size: 0.75rem;
 }
 
-/* Subtle grid line decoration */
-.bg-grid-subtle {
-  background-size: 48px 48px;
-  background-image: 
-    linear-gradient(to right, rgba(255, 255, 255, 0.02) 1px, transparent 1px),
-    linear-gradient(to bottom, rgba(255, 255, 255, 0.02) 1px, transparent 1px);
+/* Hairline that draws in when its section enters (driven by [data-reveal] script) */
+.rule {
+  height: 1px;
+  background: currentColor;
+  opacity: 0.22;
+  transform-origin: left;
 }
 
-/* Custom sleek scrollbar for desktop */
+/* hidden only when scripting is available (otherwise content is simply visible) */
+@media (scripting: enabled) {
+  [data-reveal] {
+    opacity: 0;
+    transform: translate3d(0, 28px, 0);
+    transition:
+      opacity 0.9s var(--ease-cinematic),
+      transform 1.1s var(--ease-cinematic);
+    transition-delay: var(--reveal-delay, 0s);
+  }
+  [data-reveal].is-in {
+    opacity: 1;
+    transform: none;
+  }
+}
+
 ::-webkit-scrollbar {
-  width: 4px;
+  width: 6px;
 }
 ::-webkit-scrollbar-track {
-  background: #060913;
+  background: #8e937c;
 }
 ::-webkit-scrollbar-thumb {
-  background: #1e293b;
-  border-radius: 2px;
-}
-::-webkit-scrollbar-thumb:hover {
-  background: #334155;
+  background: #3b4234;
+  border-radius: 3px;
 }
 
 @media (prefers-reduced-motion: reduce) {
-  *, ::before, ::after {
+  *,
+  ::before,
+  ::after {
     animation-duration: 0.01ms !important;
     animation-iteration-count: 1 !important;
     transition-duration: 0.01ms !important;
     scroll-behavior: auto !important;
   }
+  .grain {
+    animation: none;
+  }
+  [data-reveal] {
+    opacity: 1 !important;
+    transform: none !important;
+  }
+}
+
+/* hero entrance + scroll cue */
+.hero-rise {
+  animation: hero-rise 1.6s var(--ease-cinematic) both;
+}
+@keyframes hero-rise {
+  from { opacity: 0; transform: translate3d(0, 6%, 0); }
+  to { opacity: 1; transform: none; }
+}
+.scroll-tick {
+  animation: scroll-tick 2.2s var(--ease-cinematic) infinite;
+}
+@keyframes scroll-tick {
+  0% { transform: translateY(-100%); }
+  60%, 100% { transform: translateY(320%); }
+}
+
+/* ------------------------------------------------------------------ */
+/* Motion system (scroll reveals are gated on scripting + motion)       */
+/* ------------------------------------------------------------------ */
+
+/* masked word rise: <span.sw><span style="--w:i">word</span></span> */
+.sw {
+  display: inline-block;
+  overflow: hidden;
+  vertical-align: top;
+  padding-bottom: 0.1em;
+  margin-bottom: -0.1em;
+}
+.sw > span {
+  display: inline-block;
+}
+@media (scripting: enabled) and (prefers-reduced-motion: no-preference) {
+  [data-reveal] .sw > span,
+  [data-reveal].sw-host .sw > span {
+    transform: translate3d(0, 110%, 0) rotate(4deg);
+    transform-origin: 0 100%;
+    transition: transform 1.15s var(--ease-cinematic);
+    transition-delay: calc(var(--reveal-delay, 0s) + var(--w, 0) * 55ms);
+  }
+  [data-reveal].is-in .sw > span {
+    transform: none;
+  }
+  /* a [data-reveal] that only hosts split words shouldn't also fade/slide as a block */
+  [data-reveal].sw-host {
+    opacity: 1;
+    transform: none;
+  }
+
+  /* children that cascade in after their [data-reveal] parent: style="--i:n" on each child */
+  [data-reveal] .stagger > * {
+    opacity: 0;
+    transform: translate3d(0, 14px, 0) scale(0.96);
+    transition:
+      opacity 0.7s var(--ease-cinematic),
+      transform 0.9s var(--ease-cinematic);
+    transition-delay: calc(var(--reveal-delay, 0s) + 0.15s + var(--i, 0) * 45ms);
+  }
+  [data-reveal].is-in .stagger > * {
+    opacity: 1;
+    transform: none;
+  }
+
+  /* hairlines that draw in */
+  [data-reveal] .draw-x {
+    transform: scaleX(0);
+    transform-origin: 0 50%;
+    transition: transform 1.4s var(--ease-cinematic) calc(var(--reveal-delay, 0s) + 0.1s);
+  }
+  [data-reveal].is-in .draw-x {
+    transform: scaleX(1);
+  }
+
+  /* clip-path curtain for images / visuals */
+  [data-reveal] .curtain {
+    clip-path: inset(0 0 100% 0 round 14px);
+    transition: clip-path 1.4s var(--ease-cinematic) calc(var(--reveal-delay, 0s) + 0.15s);
+  }
+  [data-reveal].is-in .curtain {
+    clip-path: inset(0 0 0 0 round 14px);
+  }
+  [data-reveal] .curtain > * {
+    transform: scale(1.12);
+    transition: transform 1.8s var(--ease-cinematic) calc(var(--reveal-delay, 0s) + 0.15s);
+  }
+  [data-reveal].is-in .curtain > * {
+    transform: none;
+  }
+}
+
+/* tilt: smooth return to rest; spotlight follows --mx/--my */
+.tilt {
+  transition: transform 0.6s var(--ease-cinematic);
+  will-change: transform;
+}
+.tilt:hover {
+  transition-duration: 0.15s;
+}
+.spotlight {
+  position: relative;
+  isolation: isolate;
+}
+.spotlight::before {
+  content: "";
+  position: absolute;
+  inset: 0;
+  z-index: -1;
+  border-radius: inherit;
+  background: radial-gradient(420px circle at var(--mx, 50%) var(--my, 50%), var(--spot, rgba(231, 185, 111, 0.14)), transparent 60%);
+  opacity: 0;
+  transition: opacity 0.5s ease;
+  pointer-events: none;
+}
+.spotlight:hover::before {
+  opacity: 1;
+}
+
+/* outlined display text for kinetic belts */
+.text-outline {
+  /* fill is transparent but `color` stays, so the stroke can use currentColor */
+  -webkit-text-fill-color: transparent;
+  -webkit-text-stroke: 1px currentColor;
+}
+
+/* certificate lightbox: open with a soft zoom */
+dialog[open] {
+  animation: dialog-in 0.5s var(--ease-cinematic);
+}
+dialog[open]::backdrop {
+  animation: fade-in 0.4s ease;
+}
+@keyframes dialog-in {
+  from { opacity: 0; transform: scale(0.97); }
+  to { opacity: 1; transform: none; }
+}
+@keyframes fade-in {
+  from { opacity: 0; }
+  to { opacity: 1; }
+}
+
+/* contact: slow aurora behind the finale */
+.aurora {
+  position: absolute;
+  inset: -20%;
+  pointer-events: none;
+  filter: blur(60px);
+  opacity: 0.55;
+}
+.aurora span {
+  position: absolute;
+  width: 46%;
+  aspect-ratio: 1;
+  border-radius: 50%;
+  animation: drift 26s ease-in-out infinite alternate;
+}
+.aurora span:nth-child(1) { left: 8%; top: 10%; background: radial-gradient(circle, rgba(231, 185, 111, 0.35), transparent 65%); }
+.aurora span:nth-child(2) { right: 6%; top: 30%; background: radial-gradient(circle, rgba(150, 164, 120, 0.4), transparent 65%); animation-duration: 32s; animation-delay: -8s; }
+.aurora span:nth-child(3) { left: 35%; bottom: 0; background: radial-gradient(circle, rgba(140, 21, 21, 0.18), transparent 65%); animation-duration: 38s; animation-delay: -14s; }
+@keyframes drift {
+  0% { transform: translate3d(0, 0, 0) scale(1); }
+  50% { transform: translate3d(8%, -6%, 0) scale(1.12); }
+  100% { transform: translate3d(-6%, 8%, 0) scale(0.95); }
+}
+
+/* project visuals (decorative, aria-hidden) */
+@keyframes spin { to { transform: rotate(360deg); } }
+@keyframes spin-rev { to { transform: rotate(-360deg); } }
+@keyframes dash { to { stroke-dashoffset: 0; } }
+@keyframes pulse-dot { 0%, 100% { opacity: 0.35; transform: scale(0.8); } 50% { opacity: 1; transform: scale(1.15); } }
+@keyframes float-y { 0%, 100% { transform: translateY(0); } 50% { transform: translateY(-8px); } }
+@keyframes travel { from { offset-distance: 0%; } to { offset-distance: 100%; } }
+@keyframes slide-in-card { 0%, 15% { transform: translateY(18px); opacity: 0; } 30%, 85% { transform: none; opacity: 1; } 100% { opacity: 0; } }
+.motif * { transform-box: fill-box; transform-origin: center; }
+
+@media (prefers-reduced-motion: reduce) {
+  .aurora span,
+  .motif *,
+  .scroll-tick {
+    animation: none !important;
+  }
+  .tilt {
+    transform: none !important;
+  }
+}
+
+/* Experience: horizontal story layout, only while the pinned animation is active (JS adds .h-story) */
+.h-story {
+  display: flex;
+  height: 100svh;
+  flex-direction: column;
+  justify-content: center;
+  overflow: hidden;
+}
+.h-story .h-story-track {
+  width: max-content;
+  max-width: none;
+  margin: 0;
+  flex-direction: row;
+  align-items: stretch;
+  gap: 2rem;
+  padding-left: max(2.5rem, calc((100vw - 1360px) / 2 + 4rem));
+  padding-right: 12vw;
+}
+.h-story .h-story-intro { width: min(38vw, 520px); flex-shrink: 0; }
+.h-story .h-story-panel { width: min(52vw, 700px); flex-shrink: 0; }
+.h-story .h-story-progress,
+.h-story .h-story-hint { display: flex; }
+
+/* award spotlight: a slow gold light travelling around the card's edge */
+@property --ring-angle {
+  syntax: "<angle>";
+  inherits: false;
+  initial-value: 0deg;
+}
+.award-ring::before {
+  content: "";
+  position: absolute;
+  inset: 0;
+  z-index: 1;
+  padding: 1.5px;
+  border-radius: inherit;
+  background: conic-gradient(from var(--ring-angle), transparent 0 55%, rgba(231, 185, 111, 0.9) 72%, transparent 88%);
+  -webkit-mask: linear-gradient(#000 0 0) content-box, linear-gradient(#000 0 0);
+  -webkit-mask-composite: xor;
+  mask-composite: exclude;
+  pointer-events: none;
+  animation: ring-turn 7s linear infinite;
+}
+@keyframes ring-turn {
+  to { --ring-angle: 360deg; }
+}
+@media (prefers-reduced-motion: reduce) {
+  .award-ring::before { animation: none; background: rgba(231, 185, 111, 0.45); }
+}
+
+/* live LeetCode difficulty bar */
+.lc-bar { width: var(--w); }
+@media (scripting: enabled) and (prefers-reduced-motion: no-preference) {
+  [data-reveal] .lc-bar { width: 0; transition: width 1.4s var(--ease-cinematic) var(--d, 0.3s); }
+  [data-reveal].is-in .lc-bar { width: var(--w); }
 }

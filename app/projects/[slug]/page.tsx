@@ -59,7 +59,7 @@ export default async function ProjectDetailPage({ params }: ProjectPageProps) {
     <>
       <Navbar />
 
-      <main className="flex-1 pt-28 pb-20 px-4 sm:px-8 lg:px-16 bg-[#060913]">
+      <main id="main" className="relative z-10 mx-2 mt-24 mb-4 flex-1 rounded-[28px] bg-[#060913] px-4 pt-16 pb-20 text-[#F8FAFC] sm:mx-4 sm:rounded-[40px] sm:px-8 lg:px-16">
         <div className="mx-auto max-w-[1200px]">
           {/* Back link */}
           <div className="mb-8">

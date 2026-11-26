@@ -2,279 +2,137 @@
 
 import React, { useState } from "react";
 import { profileData } from "@/data/profile";
-import { SectionHeader } from "@/components/ui/SectionHeader";
-import { Mail, MapPin, Send, CheckCircle2, AlertCircle, GraduationCap } from "lucide-react";
+import { Chapter, container } from "@/components/ui/Chapter";
 import { GithubIcon, LinkedinIcon } from "@/components/ui/Icons";
+import { Magnetic } from "@/components/motion/Magnetic";
 
+/**
+ * There is no backend to deliver messages, so the form composes an email in the visitor's own
+ * mail app (mailto:) instead of pretending a message was sent.
+ */
 export function ContactSection() {
-  const [formData, setFormData] = useState({
-    name: "",
-    email: "",
-    subject: "",
-    message: "",
-  });
+  const [form, setForm] = useState({ name: "", email: "", subject: "", message: "" });
+  const [status, setStatus] = useState<"idle" | "error" | "opened">("idle");
 
-  const [status, setStatus] = useState<"idle" | "submitting" | "success" | "error">("idle");
-  const [feedbackMessage, setFeedbackMessage] = useState("");
+  const set = (e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement>) =>
+    setForm((f) => ({ ...f, [e.target.name]: e.target.value }));
 
-  const handleChange = (e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement>) => {
-    setFormData((prev) => ({
-      ...prev,
-      [e.target.name]: e.target.value,
-    }));
-  };
-
-  const handleSubmit = async (e: React.FormEvent) => {
+  const submit = (e: React.FormEvent) => {
     e.preventDefault();
-
-    if (!formData.name.trim() || !formData.email.trim() || !formData.message.trim()) {
+    if (!form.name.trim() || !form.email.trim() || !form.message.trim()) {
       setStatus("error");
-      setFeedbackMessage("Please fill in your name, email, and message.");
       return;
     }
-
-    setStatus("submitting");
-
-    // Simulated transmission / ready for Resend or EmailJS
-    setTimeout(() => {
-      setStatus("success");
-      setFeedbackMessage(
-        "Transmission acknowledged. Thank you for reaching out; I will respond promptly."
-      );
-      setFormData({ name: "", email: "", subject: "", message: "" });
-    }, 1200);
+    const subject = form.subject.trim() || `Portfolio enquiry from ${form.name.trim()}`;
+    const body = `${form.message.trim()}\n\n— ${form.name.trim()} (${form.email.trim()})`;
+    window.location.href = `mailto:${profileData.email}?subject=${encodeURIComponent(subject)}&body=${encodeURIComponent(body)}`;
+    setStatus("opened");
   };
 
+  const field =
+    "w-full border-b border-line-dark bg-transparent py-3 text-[16px] text-cream placeholder:text-cream-muted/60 focus:border-cream focus:outline-none";
+
   return (
-    <section id="contact" className="relative py-24 sm:py-32 px-4 sm:px-8 lg:px-16 border-t border-white/[0.06] bg-[#060913]">
-      <div className="mx-auto max-w-[1400px]">
-        <SectionHeader
-          number="09"
-          tag="COMMUNICATIONS PROTOCOL"
-          title="INITIATE CONTACT & COLLABORATION"
-          description="Open for research fellowship inquiries, machine learning engineering internships, systems architecture discussions, and academic collaborations."
+    <section
+      id="contact"
+      aria-labelledby="contact-title"
+      className="relative z-10 mx-2 mt-10 overflow-hidden px-5 pt-28 pb-16 text-cream sm:mx-4 sm:px-10 sm:pt-36 lg:px-16"
+    >
+      <div aria-hidden="true" data-panel="top" className="absolute inset-0 -z-10 overflow-hidden rounded-t-[28px] bg-forest sm:rounded-t-[40px]">
+        <div className="aurora">
+          <span />
+          <span />
+          <span />
+        </div>
+      </div>
+      {/* kinetic invitation drifting with the scroll */}
+      <div aria-hidden="true" className="pointer-events-none -mx-5 -mt-10 mb-16 overflow-hidden whitespace-nowrap sm:-mx-10 lg:-mx-16">
+        <div data-scrub-x="-30" className="inline-block font-serif text-[clamp(48px,9vw,140px)] leading-none text-cream/15 text-outline">
+          {Array.from({ length: 4 }, (_, k) => (
+            <span key={k} className="mx-[0.3em]">
+              Research · Internships · Collaboration <span className="text-amber/50">✦</span>
+            </span>
+          ))}
+        </div>
+      </div>
+      <div className={container}>
+        <Chapter
+          tone="dark"
+          index="10"
+          label="Contact"
+          title={<span id="contact-title">Let&apos;s build something <em className="italic">careful</em>.</span>}
+          intro={profileData.availability}
         />
-
-        <div className="grid grid-cols-1 lg:grid-cols-12 gap-12 items-start">
-          {/* Left Column: Contact Dossier & Social Links */}
-          <div className="lg:col-span-5 space-y-6">
-            <div className="rounded-xl border border-white/[0.08] bg-[#0A0F1D] p-6 sm:p-8 space-y-6 shadow-lg shadow-black/20">
+        <div className="grid gap-16 lg:grid-cols-12">
+          <div className="space-y-8 lg:col-span-5" data-reveal>
+            <Magnetic strength={0.12}>
+              <a
+                href={`mailto:${profileData.email}`}
+                className="group relative inline-block font-serif text-[clamp(26px,3vw,40px)] leading-tight"
+              >
+                {profileData.email}
+                <span aria-hidden="true" className="absolute -bottom-1 left-0 h-px w-full bg-cream/30" />
+                <span aria-hidden="true" className="absolute -bottom-1 left-0 h-px w-full origin-left scale-x-0 bg-amber transition-transform duration-700 ease-[var(--ease-cinematic)] group-hover:scale-x-100" />
+              </a>
+            </Magnetic>
+            <dl className="space-y-4 text-[14px] text-cream-muted">
               <div>
-                <span className="font-mono text-xs tracking-wider text-[#d4af37] uppercase block mb-1">
-                  DIRECT CHANNELS // N. P. RAHUL JAIN
-                </span>
-                <h3 className="font-sans text-2xl font-bold text-white">
-                  Let&apos;s Build Verifiable & Scalable AI Systems
-                </h3>
-                <p className="mt-2 text-sm text-[#94A3B8] leading-relaxed">
-                  Reach out directly for technical inquiries, research discussions in LLM calibration and robotics, or software engineering opportunities.
-                </p>
+                <dt className="eyebrow text-[9.5px]">University email</dt>
+                <dd className="mt-1 text-cream">
+                  <a href={`mailto:${profileData.universityEmail}`} className="hover:underline">{profileData.universityEmail}</a>
+                </dd>
               </div>
-
-              {/* Channels List */}
-              <div className="space-y-3 pt-4 border-t border-white/[0.04]">
-                <a
-                  href={`mailto:${profileData.email}`}
-                  className="flex items-center gap-3 rounded border border-white/[0.04] bg-[#060913] p-3 text-sm text-[#F8FAFC] hover:border-[#d4af37]/40 transition-colors"
-                >
-                  <div className="rounded p-2 bg-[#d4af37]/10 text-[#d4af37]">
-                    <Mail size={16} />
-                  </div>
-                  <div>
-                    <span className="font-mono text-[10px] text-[#64748B] uppercase block">
-                      PRIMARY EMAIL
-                    </span>
-                    <span className="font-mono text-xs sm:text-sm font-semibold">
-                      {profileData.email}
-                    </span>
-                  </div>
+              <div>
+                <dt className="eyebrow text-[9.5px]">Based in</dt>
+                <dd className="mt-1 text-cream">{profileData.location}</dd>
+              </div>
+            </dl>
+            <div className="flex gap-3">
+              <Magnetic strength={0.3}>
+                <a href={profileData.socialLinks.linkedin} target="_blank" rel="noreferrer" className="eyebrow inline-flex items-center gap-2 rounded-full border border-line-dark px-5 py-3 text-[10.5px] transition-colors hover:bg-cream hover:text-forest">
+                  <LinkedinIcon size={14} /> LinkedIn
                 </a>
-
-                <a
-                  href={`mailto:${profileData.universityEmail}`}
-                  className="flex items-center gap-3 rounded border border-white/[0.04] bg-[#060913] p-3 text-sm text-[#F8FAFC] hover:border-[#d4af37]/40 transition-colors"
-                >
-                  <div className="rounded p-2 bg-[#d4af37]/10 text-[#d4af37]">
-                    <GraduationCap size={16} />
-                  </div>
-                  <div>
-                    <span className="font-mono text-[10px] text-[#64748B] uppercase block">
-                      UNIVERSITY EMAIL (DSU)
-                    </span>
-                    <span className="font-mono text-xs sm:text-sm font-semibold">
-                      {profileData.universityEmail}
-                    </span>
-                  </div>
+              </Magnetic>
+              <Magnetic strength={0.3}>
+                <a href={profileData.socialLinks.github} target="_blank" rel="noreferrer" className="eyebrow inline-flex items-center gap-2 rounded-full border border-line-dark px-5 py-3 text-[10.5px] transition-colors hover:bg-cream hover:text-forest">
+                  <GithubIcon size={14} /> GitHub
                 </a>
-
-                <div className="flex items-center gap-3 rounded border border-white/[0.04] bg-[#060913] p-3 text-sm text-[#F8FAFC]">
-                  <div className="rounded p-2 bg-white/[0.05] text-[#94A3B8]">
-                    <MapPin size={16} />
-                  </div>
-                  <div>
-                    <span className="font-mono text-[10px] text-[#64748B] uppercase block">
-                      LOCATION
-                    </span>
-                    <span className="font-mono text-xs sm:text-sm text-white">
-                      {profileData.location}
-                    </span>
-                  </div>
-                </div>
-              </div>
-
-              {/* Social Channels */}
-              <div className="pt-4 border-t border-white/[0.04]">
-                <span className="font-mono text-xs text-[#64748B] uppercase block mb-3">
-                  PUBLIC PROFILES:
-                </span>
-                <div className="flex items-center gap-3">
-                  <a
-                    href={profileData.socialLinks.linkedin}
-                    target="_blank"
-                    rel="noreferrer"
-                    className="flex-1 flex items-center justify-center gap-2 rounded border border-white/[0.08] py-2.5 font-mono text-xs text-[#94A3B8] hover:border-[#d4af37] hover:text-[#d4af37] transition-colors"
-                  >
-                    <LinkedinIcon size={15} />
-                    <span>LINKEDIN</span>
-                  </a>
-                  <a
-                    href={profileData.socialLinks.github}
-                    target="_blank"
-                    rel="noreferrer"
-                    className="flex-1 flex items-center justify-center gap-2 rounded border border-white/[0.08] py-2.5 font-mono text-xs text-[#94A3B8] hover:border-[#d4af37] hover:text-[#d4af37] transition-colors"
-                  >
-                    <GithubIcon size={15} />
-                    <span>GITHUB</span>
-                  </a>
-                </div>
-              </div>
+              </Magnetic>
             </div>
           </div>
 
-          {/* Right Column: Interactive Contact Form */}
-          <div className="lg:col-span-7">
-            <form
-              onSubmit={handleSubmit}
-              className="rounded-xl border border-white/[0.08] bg-[#0A0F1D] p-6 sm:p-10 space-y-6 font-sans shadow-lg shadow-black/20"
-            >
-              <div className="flex items-center justify-between border-b border-white/[0.04] pb-4 mb-2">
-                <span className="font-mono text-xs text-[#d4af37] uppercase tracking-wider">
-                  TRANSMISSION DISPATCH
-                </span>
-                <span className="font-mono text-[10px] text-[#64748B]">
-                  SECURE CHANNELS
-                </span>
-              </div>
-
-              {/* Feedback Alert */}
-              {status === "success" && (
-                <div className="rounded border border-[#d4af37]/40 bg-[#d4af37]/10 p-4 font-mono text-xs text-[#e5c158] flex items-center gap-2">
-                  <CheckCircle2 size={16} />
-                  <span>{feedbackMessage}</span>
-                </div>
-              )}
-
-              {status === "error" && (
-                <div className="rounded border border-red-500/40 bg-red-500/10 p-4 font-mono text-xs text-red-400 flex items-center gap-2">
-                  <AlertCircle size={16} />
-                  <span>{feedbackMessage}</span>
-                </div>
-              )}
-
-              {/* Form Inputs Grid */}
-              <div className="grid grid-cols-1 sm:grid-cols-2 gap-6">
-                <div>
-                  <label
-                    htmlFor="name"
-                    className="block font-mono text-xs uppercase tracking-wider text-[#94A3B8] mb-2"
-                  >
-                    YOUR NAME <span className="text-[#d4af37]">*</span>
-                  </label>
-                  <input
-                    id="name"
-                    name="name"
-                    type="text"
-                    required
-                    value={formData.name}
-                    onChange={handleChange}
-                    placeholder="e.g. Dr. Alex Vance"
-                    className="w-full rounded border border-white/[0.1] bg-[#060913] px-4 py-3 font-sans text-sm text-white placeholder-[#64748B] focus:border-[#d4af37] focus:outline-none transition-colors"
-                  />
-                </div>
-
-                <div>
-                  <label
-                    htmlFor="email"
-                    className="block font-mono text-xs uppercase tracking-wider text-[#94A3B8] mb-2"
-                  >
-                    YOUR EMAIL <span className="text-[#d4af37]">*</span>
-                  </label>
-                  <input
-                    id="email"
-                    name="email"
-                    type="email"
-                    required
-                    value={formData.email}
-                    onChange={handleChange}
-                    placeholder="e.g. alex@institution.org"
-                    className="w-full rounded border border-white/[0.1] bg-[#060913] px-4 py-3 font-sans text-sm text-white placeholder-[#64748B] focus:border-[#d4af37] focus:outline-none transition-colors"
-                  />
-                </div>
-              </div>
-
-              <div>
-                <label
-                  htmlFor="subject"
-                  className="block font-mono text-xs uppercase tracking-wider text-[#94A3B8] mb-2"
-                >
-                  SUBJECT
-                </label>
-                <input
-                  id="subject"
-                  name="subject"
-                  type="text"
-                  value={formData.subject}
-                  onChange={handleChange}
-                  placeholder="e.g. Research Collaboration / Internship / Systems Engineering"
-                  className="w-full rounded border border-white/[0.1] bg-[#060913] px-4 py-3 font-sans text-sm text-white placeholder-[#64748B] focus:border-[#d4af37] focus:outline-none transition-colors"
-                />
-              </div>
-
-              <div>
-                <label
-                  htmlFor="message"
-                  className="block font-mono text-xs uppercase tracking-wider text-[#94A3B8] mb-2"
-                >
-                  MESSAGE <span className="text-[#d4af37]">*</span>
-                </label>
-                <textarea
-                  id="message"
-                  name="message"
-                  rows={5}
-                  required
-                  value={formData.message}
-                  onChange={handleChange}
-                  placeholder="Detail your inquiry, project scope, or opportunity..."
-                  className="w-full rounded border border-white/[0.1] bg-[#060913] px-4 py-3 font-sans text-sm text-white placeholder-[#64748B] focus:border-[#d4af37] focus:outline-none transition-colors resize-y"
-                />
-              </div>
-
-              <div className="pt-2 flex items-center justify-between">
-                <span className="font-mono text-[10px] text-[#64748B] uppercase">
-                  DIRECT ROUTING
-                </span>
-
-                <button
-                  type="submit"
-                  disabled={status === "submitting"}
-                  className="rounded-sm bg-[#d4af37] px-8 py-3.5 font-mono text-xs font-bold uppercase tracking-wider text-[#060913] hover:bg-[#e5c158] hover:scale-[1.02] disabled:opacity-50 transition-all flex items-center gap-2"
-                >
-                  <span>{status === "submitting" ? "DISPATCHING..." : "SEND MESSAGE"}</span>
-                  <Send size={14} />
-                </button>
-              </div>
-            </form>
-          </div>
+          <form onSubmit={submit} noValidate className="grid gap-8 lg:col-span-7" data-reveal style={{ "--reveal-delay": "0.1s" } as React.CSSProperties}>
+            <div className="grid gap-8 sm:grid-cols-2">
+              <label className="block">
+                <span className="eyebrow text-[9.5px] text-cream-muted">Name *</span>
+                <input name="name" required value={form.name} onChange={set} autoComplete="name" className={field} />
+              </label>
+              <label className="block">
+                <span className="eyebrow text-[9.5px] text-cream-muted">Email *</span>
+                <input name="email" type="email" required value={form.email} onChange={set} autoComplete="email" className={field} />
+              </label>
+            </div>
+            <label className="block">
+              <span className="eyebrow text-[9.5px] text-cream-muted">Subject</span>
+              <input name="subject" value={form.subject} onChange={set} placeholder="Research collaboration, internship…" className={field} />
+            </label>
+            <label className="block">
+              <span className="eyebrow text-[9.5px] text-cream-muted">Message *</span>
+              <textarea name="message" required rows={5} value={form.message} onChange={set} className={`${field} resize-y`} />
+            </label>
+            <div className="flex flex-wrap items-center gap-5">
+              <button type="submit" className="eyebrow rounded-full bg-cream px-6 py-3.5 text-[10.5px] text-forest transition-colors hover:bg-amber">
+                Compose email ↗
+              </button>
+              <p role="status" aria-live="polite" className="text-[13px] text-cream-muted">
+                {status === "error" && "Please add your name, email and a message."}
+                {status === "opened" && (
+                  <>Your mail app should now be open with the message ready to send. If not, write to {profileData.email}.</>
+                )}
+                {status === "idle" && "Opens your own email app — nothing is sent from this site."}
+              </p>
+            </div>
+          </form>
         </div>
       </div>
     </section>

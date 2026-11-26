@@ -1,4 +1,5 @@
 import { CodingProfileItem } from "@/types/portfolio";
+import { LEETCODE_SOLVED_TOKEN } from "@/lib/leetcode/token";
 
 export const codingProfilesData: CodingProfileItem[] = [
   {
@@ -35,9 +36,9 @@ export const codingProfilesData: CodingProfileItem[] = [
     username: "RySCledatk",
     profileUrl: "https://leetcode.com/u/RySCledatk/",
     handleOrRank: "@RySCledatk",
-    tagline: "Algorithmic problem-solving foundation with historical record of 146 solved problems and verified 100 Days consistency badge.",
+    tagline: `Algorithmic problem-solving foundation — ${LEETCODE_SOLVED_TOKEN} (live from LeetCode) — and a verified 100 Days consistency badge.`,
     metrics: [
-      { label: "Historical Solved", value: "146 Problems" },
+      { label: "Solved", value: LEETCODE_SOLVED_TOKEN },
       { label: "Badge Earned", value: "100 Days Badge" },
       { label: "Status", value: "Verified Profile" }
     ],

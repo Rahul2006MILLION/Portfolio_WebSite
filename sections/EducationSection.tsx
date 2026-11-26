@@ -1,109 +1,82 @@
 import React from "react";
 import { educationData } from "@/data/education";
-import { SectionHeader } from "@/components/ui/SectionHeader";
-import { Award, BookOpen, MapPin } from "lucide-react";
+import { Chapter, container, sectionPad } from "@/components/ui/Chapter";
+import { CountUp } from "@/components/motion/CountUp";
 
+/**
+ * Animated timeline: the spine draws itself with scroll (data-draw), each milestone's node lights
+ * up as it arrives, the year floats behind in outline type (parallax), scores count up to their
+ * exact values and coursework chips cascade in.
+ */
 export function EducationSection() {
   return (
-    <section id="education" className="relative py-24 sm:py-32 px-4 sm:px-8 lg:px-16 border-t border-white/[0.06] bg-[#060913]">
-      <div className="mx-auto max-w-[1400px]">
-        <SectionHeader
-          number="02"
-          tag="ACADEMIC FOUNDATION"
-          title="EDUCATION & INSTITUTIONAL RECORD"
-          description="Undergraduate training in Computer Science & Engineering (AI & ML) at Dayananda Sagar University alongside distinction in secondary sciences."
-        />
+    <section id="education" className={sectionPad} aria-labelledby="education-title">
+      <div className={container}>
+        <Chapter index="02" label="Education" title={<span id="education-title">Where I learned the <em className="italic">fundamentals</em>.</span>} />
+        <ol className="relative">
+          {/* spine: faint track + a line that draws with scroll */}
+          <span aria-hidden="true" className="absolute left-[7px] top-2 bottom-2 w-px bg-ink/15 sm:left-[calc(25%+7px)]" />
+          <span aria-hidden="true" data-draw="y" className="absolute left-[7px] top-2 bottom-2 w-px origin-top bg-ink sm:left-[calc(25%+7px)]" />
+          {educationData.map((e) => {
+            const year = e.period.match(/\d{4}/g)?.pop() ?? "";
+            return (
+              <li
+                key={e.id}
+                className="group/edu relative grid gap-3 pb-24 pl-10 last:pb-0 sm:grid-cols-4 sm:gap-10 sm:pl-0"
+                data-reveal
+                style={{ "--reveal-delay": "0.05s" } as React.CSSProperties}
+              >
+                {/* node: rings out once when the milestone arrives */}
+                <span aria-hidden="true" className="absolute left-0 top-1.5 h-[15px] w-[15px] sm:left-[calc(25%)]">
+                  <span className="absolute inset-0 rounded-full border border-ink/40 bg-sage-200" />
+                  <span
+                    className={`absolute inset-[4px] scale-0 rounded-full transition-transform delay-300 duration-700 ease-[var(--ease-cinematic)] group-[.is-in]/edu:scale-100 ${
+                      e.status === "In Progress" ? "bg-ink" : "bg-ink/50"
+                    }`}
+                  />
+                  <span className="absolute -inset-2 rounded-full border border-ink/40 opacity-0 group-[.is-in]/edu:animate-[ping_1.6s_ease-out_0.35s_1]" />
+                </span>
 
-        {/* Timeline Container */}
-        <div className="relative border-l border-white/[0.08] ml-3 sm:ml-6 pl-6 sm:pl-10 space-y-12">
-          {educationData.map((edu) => (
-            <div key={edu.id} className="relative group">
-              {/* Timeline Marker Dot */}
-              <div className="absolute -left-[31px] sm:-left-[47px] top-1.5 h-4 w-4 rounded-full border-2 border-[#d4af37] bg-[#060913] group-hover:scale-125 transition-transform" />
+                {/* outlined year drifting behind */}
+                <span
+                  aria-hidden="true"
+                  className="pointer-events-none absolute -top-10 right-0 select-none font-serif text-[clamp(90px,14vw,220px)] leading-none text-ink/10 text-outline"
+                  data-parallax="0.25"
+                >
+                  {year}
+                </span>
 
-              {/* Education Card */}
-              <div className="rounded-xl border border-white/[0.08] bg-[#0A0F1D] p-6 sm:p-8 transition-colors hover:border-[#d4af37]/40 shadow-lg shadow-black/30">
-                {/* Header Row */}
-                <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-3 border-b border-white/[0.04] pb-4 mb-6">
-                  <div>
-                    <span className="font-mono text-[11px] text-[#d4af37] tracking-wider uppercase block">
-                      {edu.status} {"//"} {edu.period}
-                    </span>
-                    <h3 className="font-sans text-xl sm:text-2xl font-bold text-white mt-1">
-                      {edu.degree}
-                    </h3>
-                    {edu.specialization && (
-                      <p className="font-mono text-xs sm:text-sm text-[#94A3B8] mt-0.5">
-                        {edu.specialization}
-                      </p>
-                    )}
-                  </div>
-
-                  <div className="flex flex-col sm:items-end gap-1 font-mono text-xs text-[#94A3B8]">
-                    <span className="text-[#F8FAFC] font-semibold text-sm">{edu.institution}</span>
-                    {edu.location && (
-                      <span className="flex items-center gap-1 text-[11px] text-[#64748B]">
-                        <MapPin size={12} />
-                        {edu.location}
-                      </span>
-                    )}
-                    <span className="rounded-sm border border-[#d4af37]/30 bg-[#d4af37]/10 px-2.5 py-0.5 text-[11px] text-[#e5c158] font-bold mt-1">
-                      {edu.scoreType}: {edu.score}
-                    </span>
-                  </div>
+                <div className="eyebrow text-[10.5px] text-ink-muted sm:pt-1 sm:pr-6 sm:text-right">
+                  <span className="inline-block transition-[letter-spacing] duration-1000 ease-[var(--ease-cinematic)] group-[.is-in]/edu:tracking-[0.22em]">
+                    {e.period}
+                  </span>
+                  <span className="mt-1 block normal-case tracking-normal">{e.status}</span>
                 </div>
-
-                {/* Description */}
-                {edu.description && (
-                  <p className="text-sm text-[#94A3B8] leading-relaxed mb-6 font-sans">
-                    {edu.description}
+                <div className="relative sm:col-span-3 sm:pl-12">
+                  <h3 className="font-serif text-[clamp(28px,3vw,42px)] leading-tight text-ink">{e.institution}</h3>
+                  <p className="mt-2 text-[15px] text-ink-soft">
+                    {e.degree}
+                    {e.specialization && <> · {e.specialization}</>}
                   </p>
-                )}
-
-                {/* Relevant Coursework if present */}
-                {edu.coursework && edu.coursework.length > 0 && (
-                  <div className="mb-6">
-                    <h4 className="font-mono text-xs tracking-wider text-[#94A3B8] uppercase mb-3 flex items-center gap-2">
-                      <BookOpen size={14} className="text-[#d4af37]" />
-                      <span>CORE CURRICULUM & SUBJECTS</span>
-                    </h4>
-                    <div className="flex flex-wrap gap-2">
-                      {edu.coursework.map((course) => (
-                        <span
-                          key={course}
-                          className="rounded-sm border border-white/[0.06] bg-[#060913] px-3 py-1 font-mono text-xs text-[#CBD5E1] hover:border-white/[0.2] transition-colors"
-                        >
-                          {course}
-                        </span>
-                      ))}
-                    </div>
-                  </div>
-                )}
-
-                {/* Academic Highlights */}
-                {edu.highlights && edu.highlights.length > 0 && (
-                  <div>
-                    <h4 className="font-mono text-xs tracking-wider text-[#94A3B8] uppercase mb-3 flex items-center gap-2">
-                      <Award size={14} className="text-[#d4af37]" />
-                      <span>HONORS & ROLES</span>
-                    </h4>
-                    <ul className="space-y-2">
-                      {edu.highlights.map((ach, aIdx) => (
-                        <li
-                          key={aIdx}
-                          className="flex items-start gap-2 text-xs sm:text-sm text-[#94A3B8]"
-                        >
-                          <span className="text-[#d4af37] font-mono mt-0.5">▸</span>
-                          <span>{ach}</span>
+                  <p className="mt-5 inline-flex items-baseline gap-3 rounded-full border border-ink/20 bg-sage-100/40 px-4 py-2 backdrop-blur-[2px]">
+                    <span className="eyebrow text-[9.5px] text-ink-muted">{e.scoreType}</span>
+                    <CountUp value={e.score} duration={1.8} className="font-serif text-[30px] leading-none text-ink" />
+                  </p>
+                  {e.description && <p className="mt-5 max-w-[62ch] text-[15px] leading-relaxed text-ink-soft">{e.description}</p>}
+                  {e.coursework && (
+                    <ul className="stagger mt-5 flex flex-wrap gap-2">
+                      {e.coursework.map((c, k) => (
+                        <li key={c} style={{ "--i": k } as React.CSSProperties} className="rounded-full bg-ink/[0.06] px-3 py-1 text-[12.5px] text-ink-soft">
+                          {c}
                         </li>
                       ))}
                     </ul>
-                  </div>
-                )}
-              </div>
-            </div>
-          ))}
-        </div>
+                  )}
+                </div>
+              </li>
+            );
+          })}
+        </ol>
       </div>
     </section>
   );

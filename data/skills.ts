@@ -10,11 +10,11 @@ export const skillCategoriesData: SkillCategoryGroup[] = [
       { name: "Python", isKeySkill: true, levelTag: "Primary / ML & Systems" },
       { name: "Java", isKeySkill: true, levelTag: "OOP & Core CS" },
       { name: "C", isKeySkill: false, levelTag: "Foundational & Memory" },
-      { name: "TypeScript", isKeySkill: true, levelTag: "Type-Safe Web" },
-      { name: "JavaScript", isKeySkill: false, levelTag: "Modern ES6+" },
       { name: "SQL", isKeySkill: true, levelTag: "Relational Queries" },
       { name: "HTML", isKeySkill: false, levelTag: "Semantic Markup" },
-      { name: "CSS", isKeySkill: false, levelTag: "Styling & Layout" }
+      { name: "CSS", isKeySkill: false, levelTag: "Styling & Layout" },
+      { name: "ROS 2", isKeySkill: false, levelTag: "Robotics Middleware" },
+      { name: "Gazebo", isKeySkill: false, levelTag: "Robot Simulation" }
     ]
   },
   {
@@ -52,23 +52,9 @@ export const skillCategoriesData: SkillCategoryGroup[] = [
     ]
   },
   {
-    id: "frontend-development",
-    title: "Frontend Development",
-    categoryNumber: "04",
-    description: "Reactive component interfaces, state synchronization, responsive styling, and modern motion.",
-    skills: [
-      { name: "React", isKeySkill: true, levelTag: "Component UI" },
-      { name: "Next.js", isKeySkill: true, levelTag: "App Router / SSR" },
-      { name: "Vite", isKeySkill: false, levelTag: "Modern Bundler" },
-      { name: "Tailwind CSS", isKeySkill: true, levelTag: "Utility Styling" },
-      { name: "Three.js", isKeySkill: false, levelTag: "Interactive 3D" },
-      { name: "GSAP", isKeySkill: false, levelTag: "Precision Animation" }
-    ]
-  },
-  {
     id: "ai-tools-infrastructure",
     title: "AI Tools and Infrastructure",
-    categoryNumber: "05",
+    categoryNumber: "04",
     description: "Local inference runtimes, foundational API integrations, containerization, and version control.",
     skills: [
       { name: "Ollama", isKeySkill: true, levelTag: "Local LLM Serving" },
@@ -81,7 +67,7 @@ export const skillCategoriesData: SkillCategoryGroup[] = [
   {
     id: "engineering-development",
     title: "Engineering and Development",
-    categoryNumber: "06",
+    categoryNumber: "05",
     description: "Core computer science principles, computational simulations, test automation, and systems architecture.",
     skills: [
       { name: "Data Structures and Algorithms", isKeySkill: true, levelTag: "Optimization & LeetCode" },

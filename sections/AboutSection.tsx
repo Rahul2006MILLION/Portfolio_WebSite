@@ -1,115 +1,73 @@
 import React from "react";
+import { LiveText } from "@/components/live/LiveText";
+import { CountUp } from "@/components/motion/CountUp";
+import { splitWords } from "@/components/motion/split";
 import { profileData } from "@/data/profile";
-import { SectionHeader } from "@/components/ui/SectionHeader";
-import {
-  Cpu,
-  Layers,
-  Target,
-  FlaskConical,
-} from "lucide-react";
+import { Chapter, container, sectionPad } from "@/components/ui/Chapter";
 
 export function AboutSection() {
   return (
-    <section id="about" className="relative py-24 sm:py-32 px-4 sm:px-8 lg:px-16 border-t border-white/[0.06] bg-[#060913]">
-      <div className="mx-auto max-w-[1400px]">
-        <SectionHeader
-          number="01"
-          tag="BIOGRAPHICAL DOSSIER"
-          title="ENGINEERING PHILOSOPHY & PROFILE"
-          description="Bridging statistical machine learning, multilingual LLM calibration, decentralized robotic planning, and high-performance software architecture."
+    <section id="about" className={sectionPad} aria-labelledby="about-title">
+      <div className={container}>
+        <Chapter
+          index="01"
+          label="About"
+          title={
+            <span id="about-title">
+              Careful systems, <em className="italic">measured</em> honestly.
+            </span>
+          }
         />
 
-        <div className="grid grid-cols-1 lg:grid-cols-12 gap-12 items-start">
-          {/* Left Column: Narrative Bio & Key Ambitions */}
-          <div className="lg:col-span-7 space-y-6">
-            <div className="rounded-xl border border-white/[0.08] bg-[#0A0F1D] p-6 sm:p-8 space-y-4 font-sans text-base sm:text-lg text-[#94A3B8] leading-relaxed">
-              <div className="flex items-center justify-between border-b border-white/[0.04] pb-3 mb-2 font-mono text-xs">
-                <span className="tracking-wider text-[#d4af37] uppercase font-semibold">
-                  {"//"} EXECUTIVE PROFILE
-                </span>
-                <span className="text-[#64748B]">BENGALURU, INDIA</span>
-              </div>
-              {profileData.fullBio.map((paragraph, idx) => (
-                <p key={idx} className="text-[#CBD5E1]">
-                  {paragraph}
-                </p>
-              ))}
-            </div>
-
-            {/* Strategic Pillars / Ambitions */}
-            <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
-              <div className="rounded-lg border border-white/[0.06] bg-[#0A0F1D] p-5">
-                <div className="flex items-center gap-2.5 font-mono text-xs text-[#d4af37] uppercase mb-2">
-                  <Target size={16} />
-                  <span>CORE MOTIVATION</span>
-                </div>
-                <p className="text-xs sm:text-sm text-[#94A3B8] leading-relaxed">
-                  Building verifiable, calibrated AI solutions where uncertainty is mathematically modeled and mission-critical systems operate with deterministic safety.
-                </p>
-              </div>
-
-              <div className="rounded-lg border border-white/[0.06] bg-[#0A0F1D] p-5">
-                <div className="flex items-center gap-2.5 font-mono text-xs text-[#d4af37] uppercase mb-2">
-                  <FlaskConical size={16} />
-                  <span>RESEARCH TRAJECTORY</span>
-                </div>
-                <p className="text-xs sm:text-sm text-[#94A3B8] leading-relaxed">
-                  Investigating confidence calibration shifts in multilingual models, semantic entropy quantification, and agent denial leakage.
-                </p>
-              </div>
-            </div>
+        <div className="grid gap-12 lg:grid-cols-12">
+          <p
+            className="sw-host font-serif text-[clamp(24px,2.6vw,36px)] leading-[1.2] text-ink lg:col-span-5"
+            data-reveal
+            aria-label={profileData.tagline}
+          >
+            {splitWords(profileData.tagline)}
+          </p>
+          <div className="space-y-5 text-[15.5px] leading-[1.75] text-ink-soft lg:col-span-6 lg:col-start-7">
+            {profileData.fullBio.map((p, i) => (
+              <p key={i} data-reveal style={{ "--reveal-delay": `${0.06 * i}s` } as React.CSSProperties}>
+                {p}
+              </p>
+            ))}
           </div>
+        </div>
 
-          {/* Right Column: Key Focus Areas & Technical Telemetry */}
-          <div className="lg:col-span-5 space-y-6">
-            {/* Focus Areas Card */}
-            <div className="rounded-xl border border-white/[0.08] bg-[#0A0F1D] p-6 sm:p-8">
-              <h3 className="font-mono text-xs tracking-widest text-[#94A3B8] uppercase mb-4 flex items-center gap-2">
-                <Layers size={14} className="text-[#d4af37]" />
-                <span>CORE SPECIALIZATION DOMAINS</span>
-              </h3>
-
-              <div className="space-y-3">
-                {profileData.focusAreas.map((area, idx) => (
-                  <div
-                    key={idx}
-                    className="flex items-center gap-3 rounded border border-white/[0.04] bg-[#060913] p-3 text-xs sm:text-sm text-[#F8FAFC] font-sans hover:border-[#d4af37]/30 transition-colors"
-                  >
-                    <span className="font-mono text-xs text-[#d4af37]">
-                      0{idx + 1}
-                    </span>
-                    <span>{area}</span>
-                  </div>
-                ))}
-              </div>
+        <dl className="mt-20 grid grid-cols-2 border-t border-line-light lg:grid-cols-4">
+          {profileData.metrics.map((m, i) => (
+            <div
+              key={m.label}
+              className="border-b border-line-light py-7 pr-4 lg:border-b-0 lg:border-r lg:pl-6 lg:first:pl-0 lg:last:border-r-0"
+              data-reveal
+              style={{ "--reveal-delay": `${0.07 * i}s` } as React.CSSProperties}
+            >
+              <dt className="eyebrow text-[10px] text-ink-muted">{m.label}</dt>
+              <dd className="mt-3 font-serif text-[clamp(30px,3.4vw,46px)] leading-none text-ink"><CountUp value={m.value} /></dd>
+              {m.sublabel && <dd className="mt-2 text-[13px] text-ink-muted"><LiveText text={m.sublabel} /></dd>}
             </div>
+          ))}
+        </dl>
 
-            {/* Academic & Engineering Telemetry */}
-            <div className="rounded-xl border border-white/[0.08] bg-[#0A0F1D] p-6">
-              <h3 className="font-mono text-xs tracking-widest text-[#94A3B8] uppercase mb-4 flex items-center gap-2">
-                <Cpu size={14} className="text-[#d4af37]" />
-                <span>VERIFIED METRICS</span>
-              </h3>
-
-              <div className="grid grid-cols-2 gap-4">
-                {profileData.metrics.map((m, idx) => (
-                  <div key={idx} className="border-l border-white/[0.08] pl-3 py-1">
-                    <span className="font-mono text-[10px] text-[#64748B] uppercase block">
-                      {m.label}
-                    </span>
-                    <span className="font-mono text-xl sm:text-2xl font-black text-white block mt-0.5">
-                      {m.value}
-                    </span>
-                    {m.sublabel && (
-                      <span className="font-mono text-[10px] text-[#94A3B8] block mt-0.5">
-                        {m.sublabel}
-                      </span>
-                    )}
-                  </div>
-                ))}
-              </div>
-            </div>
-          </div>
+        <div className="mt-16 grid gap-6 lg:grid-cols-12">
+          <h3 className="eyebrow text-[10.5px] text-ink-muted lg:col-span-3" data-reveal>
+            Current focus
+          </h3>
+          <ul className="lg:col-span-9">
+            {profileData.focusAreas.map((f, i) => (
+              <li
+                key={f}
+                className="flex items-baseline gap-5 border-b border-line-light py-4 text-[17px] text-ink"
+                data-reveal
+                style={{ "--reveal-delay": `${0.05 * i}s` } as React.CSSProperties}
+              >
+                <span className="font-mono text-[11px] text-ink-muted">{String(i + 1).padStart(2, "0")}</span>
+                {f}
+              </li>
+            ))}
+          </ul>
         </div>
       </div>
     </section>

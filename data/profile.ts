@@ -1,4 +1,5 @@
 import { ProfileData } from "@/types/portfolio";
+import { LEETCODE_SOLVED_TOKEN } from "@/lib/leetcode/token";
 
 export const profileData: ProfileData = {
   name: "N. P. Rahul Jain",
@@ -34,7 +35,7 @@ export const profileData: ProfileData = {
   metrics: [
     { label: "Academic CGPA", value: "9.35", sublabel: "Dayananda Sagar University" },
     { label: "Engineering Repos", value: "11+", sublabel: "Open Source Systems" },
-    { label: "LeetCode Milestone", value: "100 Days", sublabel: "146 Problems (Historical)" },
+    { label: "LeetCode Milestone", value: "100 Days", sublabel: LEETCODE_SOLVED_TOKEN },
     { label: "Core Focus", value: "AI / ML & Systems", sublabel: "LLM Calibration · Robotics" },
   ],
   focusAreas: [

@@ -2,164 +2,158 @@
 
 import React, { useEffect, useState } from "react";
 import Link from "next/link";
-import { Magnetic } from "@/components/motion/Magnetic";
-import { Menu, X, ArrowUpRight } from "lucide-react";
+import { usePathname } from "next/navigation";
+import { profileData } from "@/data/profile";
 
 export const NAV_LINKS = [
-  { label: "ABOUT", href: "#about", index: "01" },
-  { label: "EDUCATION", href: "#education", index: "02" },
-  { label: "EXPERIENCE", href: "#experience", index: "03" },
-  { label: "SKILLS", href: "#skills", index: "04" },
-  { label: "PROJECTS", href: "#projects", index: "05" },
-  { label: "RESEARCH", href: "#research", index: "06" },
-  { label: "ACHIEVEMENTS", href: "#achievements", index: "07" },
-  { label: "CODING", href: "#coding", index: "08" },
-  { label: "CONTACT", href: "#contact", index: "09" },
+  { label: "About", href: "#about", index: "01" },
+  { label: "Education", href: "#education", index: "02" },
+  { label: "Experience", href: "#experience", index: "03" },
+  { label: "Skills", href: "#skills", index: "04" },
+  { label: "Projects", href: "#projects", index: "05" },
+  { label: "Research", href: "#research", index: "06" },
+  { label: "Achievements", href: "#achievements", index: "07" },
+  { label: "Certifications", href: "#certifications", index: "08" },
+  { label: "Profiles", href: "#coding", index: "09" },
+  { label: "Contact", href: "#contact", index: "10" },
 ];
+
+const QUICK = ["#projects", "#research", "#contact"];
+
+type LenisLike = { scrollTo: (target: Element, opts?: { offset?: number; duration?: number }) => void; stop: () => void; start: () => void };
+const lenis = () => (window as unknown as { __lenis?: LenisLike }).__lenis;
+
+export function scrollToHash(href: string) {
+  const target = document.querySelector(href);
+  if (!target) return false;
+  const l = lenis();
+  if (l) l.scrollTo(target, { offset: 0, duration: 1.4 });
+  else target.scrollIntoView({ behavior: "smooth" });
+  return true;
+}
 
 export function Navbar() {
   const [scrolled, setScrolled] = useState(false);
-  const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
+  const [open, setOpen] = useState(false);
+  const pathname = usePathname();
+  const onHome = pathname === "/";
 
   useEffect(() => {
-    const handleScroll = () => {
-      setScrolled(window.scrollY > 40);
-    };
-
-    window.addEventListener("scroll", handleScroll, { passive: true });
-    return () => window.removeEventListener("scroll", handleScroll);
+    const onScroll = () => setScrolled(window.scrollY > 60);
+    onScroll();
+    window.addEventListener("scroll", onScroll, { passive: true });
+    return () => window.removeEventListener("scroll", onScroll);
   }, []);
 
-  const handleScrollTo = (e: React.MouseEvent<HTMLAnchorElement>, href: string) => {
-    if (href.startsWith("#")) {
+  useEffect(() => {
+    if (!open) return;
+    lenis()?.stop();
+    const onKey = (e: KeyboardEvent) => e.key === "Escape" && setOpen(false);
+    window.addEventListener("keydown", onKey);
+    return () => {
+      lenis()?.start();
+      window.removeEventListener("keydown", onKey);
+    };
+  }, [open]);
+
+  const go = (e: React.MouseEvent<HTMLAnchorElement>, href: string) => {
+    if (onHome && href.startsWith("#") && scrollToHash(href)) {
       e.preventDefault();
-      const target = document.querySelector(href);
-      if (target) {
-        target.scrollIntoView({ behavior: "smooth" });
-        setMobileMenuOpen(false);
-      }
+      setOpen(false);
     }
   };
+  const hrefFor = (h: string) => (onHome ? h : `/${h}`);
 
   return (
-    <header
-      className={`fixed top-0 inset-x-0 z-40 transition-all duration-300 ${
-        scrolled ? "pt-2 pb-2" : "pt-5 pb-5"
-      }`}
-    >
-      <div className="mx-auto max-w-[1440px] px-4 sm:px-8 lg:px-12">
+    <>
+      <header className="fixed inset-x-0 top-0 z-50 px-4 pt-4 sm:px-8 sm:pt-6">
         <nav
-          className={`flex items-center justify-between transition-all duration-300 ${
-            scrolled
-              ? "rounded-full border border-white/[0.08] bg-[#060913]/90 px-5 py-2 shadow-2xl backdrop-blur-md"
-              : "border-b border-white/[0.04] pb-3"
+          aria-label="Primary"
+          className={`mx-auto flex max-w-[1600px] items-center justify-between rounded-full px-4 py-2.5 transition-[background-color,box-shadow,backdrop-filter] duration-500 sm:px-5 ${
+            scrolled ? "bg-sage-200/70 shadow-[0_8px_30px_-12px_rgba(20,25,16,0.35)] backdrop-blur-md" : ""
           }`}
         >
-          {/* Brand Mark */}
-          <Magnetic strength={0.25}>
-            <Link
-              href="#hero"
-              data-cursor="hover"
-              className="flex items-center gap-2 group font-mono text-sm tracking-widest text-[#F8FAFC] uppercase"
-            >
-              <span className="font-black text-white tracking-tighter transition-colors group-hover:text-[#d4af37]">
-                N. P. RAHUL JAIN
-              </span>
-              <span className="text-[#64748B]">{"//"}</span>
-              <span className="text-[10px] text-[#94A3B8] font-normal hidden sm:inline">AI/ML · DSU</span>
-            </Link>
-          </Magnetic>
+          <Link href={onHome ? "#top" : "/"} onClick={(e) => go(e, "#top")} className="group leading-tight">
+            <span className="block text-[13px] font-medium tracking-[0.06em] text-ink">{profileData.name}</span>
+            <span className="eyebrow block text-[9.5px] text-ink-muted">Creative Technologist</span>
+          </Link>
 
-          {/* Center Telemetry Status Badge */}
-          <div className="hidden xl:flex items-center gap-2 rounded-full border border-white/[0.06] bg-white/[0.02] px-3 py-1 font-mono text-[9px] tracking-wider text-[#94A3B8] uppercase">
-            <span className="relative flex h-1.5 w-1.5">
-              <span className="absolute inline-flex h-full w-full animate-ping rounded-full bg-[#d4af37] opacity-60" />
-              <span className="relative inline-flex h-1.5 w-1.5 rounded-full bg-[#d4af37]" />
-            </span>
-            <span className="text-white/80 font-medium">B.TECH CSE (AI & ML) // CGPA 9.35</span>
-          </div>
-
-          {/* Desktop Nav Items */}
-          <div className="hidden lg:flex items-center gap-0.5">
-            {NAV_LINKS.map((item) => (
-              <a
-                key={item.label}
-                href={item.href}
-                onClick={(e) => handleScrollTo(e, item.href)}
-                data-cursor="hover"
-                className="group relative flex items-center gap-1 px-2.5 py-1 font-mono text-[11px] tracking-wider text-[#94A3B8] uppercase transition-colors duration-200 hover:text-[#F8FAFC] focus-visible:text-[#d4af37]"
-              >
-                <span className="text-[9px] text-[#64748B] transition-colors group-hover:text-[#d4af37]">
-                  {item.index}
-                </span>
-                <span>{item.label}</span>
-                <span className="absolute bottom-0 left-2 right-2 h-[1px] scale-x-0 bg-[#d4af37] transition-transform duration-300 ease-out group-hover:scale-x-100" />
-              </a>
-            ))}
-          </div>
-
-          {/* CTA Button */}
-          <div className="hidden sm:flex items-center gap-3">
-            <a
-              href="#contact"
-              onClick={(e) => handleScrollTo(e, "#contact")}
-              className="rounded-full border border-[#d4af37]/40 bg-[#d4af37]/10 px-3.5 py-1.5 font-mono text-xs font-semibold text-[#e5c158] hover:bg-[#d4af37] hover:text-[#060913] transition-all flex items-center gap-1.5"
-            >
-              <span>CONNECT</span>
-              <ArrowUpRight size={13} />
-            </a>
-          </div>
-
-          {/* Mobile Menu Toggle Button */}
-          <button
-            type="button"
-            onClick={() => setMobileMenuOpen(!mobileMenuOpen)}
-            aria-label="Toggle navigation menu"
-            aria-expanded={mobileMenuOpen}
-            className="flex h-9 w-9 items-center justify-center rounded border border-white/[0.08] text-[#94A3B8] hover:text-white lg:hidden"
-          >
-            {mobileMenuOpen ? <X size={18} /> : <Menu size={18} />}
-          </button>
-        </nav>
-
-        {/* Mobile Dropdown Menu */}
-        {mobileMenuOpen && (
-          <div className="mt-2 rounded-xl border border-white/[0.12] bg-[#060913]/95 p-5 shadow-2xl backdrop-blur-xl lg:hidden">
-            <div className="mb-4 flex items-center justify-between border-b border-white/[0.06] pb-3 font-mono text-[10px] text-[#94A3B8] uppercase">
-              <span className="flex items-center gap-1.5">
-                <span className="h-1.5 w-1.5 rounded-full bg-[#d4af37]" />
-                NAVIGATION DIRECTORY
-              </span>
-              <span>9 NODES</span>
-            </div>
-
-            <div className="grid grid-cols-2 gap-2">
-              {NAV_LINKS.map((item) => (
-                <a
-                  key={item.label}
-                  href={item.href}
-                  onClick={(e) => handleScrollTo(e, item.href)}
-                  className="flex items-center justify-between rounded border border-white/[0.04] bg-white/[0.01] px-3 py-2.5 font-mono text-xs tracking-wider text-[#94A3B8] uppercase hover:border-[#d4af37]/40 hover:text-[#d4af37] transition-colors"
-                >
-                  <span>{item.label}</span>
-                  <span className="text-[10px] text-[#64748B]">{item.index}</span>
-                </a>
+          <div className="flex items-center gap-1 sm:gap-2">
+            <ul className="hidden items-center md:flex">
+              {NAV_LINKS.filter((l) => QUICK.includes(l.href)).map((l) => (
+                <li key={l.href}>
+                  <a
+                    href={hrefFor(l.href)}
+                    onClick={(e) => go(e, l.href)}
+                    className="eyebrow rounded-full px-3 py-2 text-[10.5px] text-ink-soft transition-colors hover:text-ink"
+                  >
+                    {l.label}
+                  </a>
+                </li>
               ))}
-            </div>
-
-            <div className="mt-4 pt-4 border-t border-white/[0.06] flex items-center justify-between">
-              <span className="font-mono text-[10px] text-[#64748B]">BENGALURU, INDIA</span>
-              <a
-                href="#contact"
-                onClick={(e) => handleScrollTo(e, "#contact")}
-                className="font-mono text-xs text-[#d4af37] font-bold uppercase hover:underline"
-              >
-                GET IN TOUCH →
-              </a>
-            </div>
+            </ul>
+            <button
+              type="button"
+              onClick={() => setOpen(true)}
+              aria-expanded={open}
+              aria-controls="site-index"
+              className="eyebrow flex items-center gap-2 rounded-full border border-ink/25 px-3.5 py-2 text-[10.5px] text-ink transition-colors hover:bg-ink hover:text-cream"
+            >
+              <span aria-hidden="true" className="flex flex-col gap-[3px]">
+                <span className="block h-px w-3.5 bg-current" />
+                <span className="block h-px w-3.5 bg-current" />
+              </span>
+              Index
+            </button>
           </div>
-        )}
+        </nav>
+      </header>
+
+      {/* full-screen index */}
+      <div
+        id="site-index"
+        role="dialog"
+        aria-modal="true"
+        aria-label="Site index"
+        hidden={!open}
+        className="fixed inset-0 z-[70] overflow-y-auto bg-forest text-cream"
+        data-lenis-prevent
+      >
+        <div className="mx-auto flex min-h-full max-w-[1600px] flex-col px-6 py-6 sm:px-10">
+          <div className="flex items-center justify-between">
+            <span className="eyebrow text-[10.5px] text-cream-muted">Index</span>
+            <button
+              type="button"
+              onClick={() => setOpen(false)}
+              className="eyebrow rounded-full border border-cream/30 px-4 py-2 text-[10.5px] hover:bg-cream hover:text-forest"
+              autoFocus
+            >
+              Close
+            </button>
+          </div>
+          <ol className="mt-10 grid flex-1 content-center gap-x-12 sm:grid-cols-2">
+            {NAV_LINKS.map((l) => (
+              <li key={l.href} className="border-b border-line-dark">
+                <a
+                  href={hrefFor(l.href)}
+                  onClick={(e) => go(e, l.href)}
+                  className="group flex items-baseline gap-5 py-3.5 sm:py-4"
+                >
+                  <span className="font-mono text-xs text-cream-muted">{l.index}</span>
+                  <span className="font-serif text-4xl transition-transform duration-500 ease-[var(--ease-cinematic)] group-hover:translate-x-2 sm:text-5xl">
+                    {l.label}
+                  </span>
+                </a>
+              </li>
+            ))}
+          </ol>
+          <div className="eyebrow mt-10 flex flex-wrap gap-x-6 gap-y-2 text-[10.5px] text-cream-muted">
+            <a href={profileData.socialLinks.github} target="_blank" rel="noreferrer" className="hover:text-cream">GitHub ↗</a>
+            <a href={profileData.socialLinks.linkedin} target="_blank" rel="noreferrer" className="hover:text-cream">LinkedIn ↗</a>
+            <a href={profileData.socialLinks.email} className="hover:text-cream">{profileData.email}</a>
+          </div>
+        </div>
       </div>
-    </header>
+    </>
   );
 }
