@@ -32,16 +32,16 @@ export const codingProfilesData: CodingProfileItem[] = [
   {
     id: "profile-leetcode",
     platform: "LeetCode",
-    username: "Configurable Profile",
-    profileUrl: "https://leetcode.com/Rahul2006MILLION", // Configurable handle
-    handleOrRank: "100 Days Badge Milestone",
+    username: "RySCledatk",
+    profileUrl: "https://leetcode.com/u/RySCledatk/",
+    handleOrRank: "@RySCledatk",
     tagline: "Algorithmic problem-solving foundation with historical record of 146 solved problems and verified 100 Days consistency badge.",
     metrics: [
       { label: "Historical Solved", value: "146 Problems" },
       { label: "Badge Earned", value: "100 Days Badge" },
-      { label: "Status", value: "Historical Verified" }
+      { label: "Status", value: "Verified Profile" }
     ],
     highlightColor: "#FFA116",
-    isConfigurable: true
+    isConfigurable: false
   }
 ];
