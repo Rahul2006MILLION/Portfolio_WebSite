@@ -18,9 +18,9 @@ const geistMono = Geist_Mono({
 });
 
 export const metadata: Metadata = {
-  title: "Rahul Jain // Software Engineer",
+  title: "N. P. Rahul Jain // AI/ML Engineer · Software Developer · AI Researcher",
   description:
-    "Award-level interactive developer portfolio of Rahul Jain. Software engineering, high-performance systems, DSA, and modern creative web craft.",
+    "Official engineering and research portfolio of N. P. Rahul Jain, Computer Science and Engineering (AI & ML) student at Dayananda Sagar University. Showcasing LLM calibration, multi-robot coordination, and intelligent systems.",
 };
 
 export default function RootLayout({
@@ -33,7 +33,7 @@ export default function RootLayout({
       lang="en"
       className={`${geistSans.variable} ${geistMono.variable} h-full antialiased dark`}
     >
-      <body className="min-h-full flex flex-col bg-[#070809] text-[#F5F6F8]">
+      <body className="min-h-full flex flex-col bg-[#060913] text-[#F8FAFC]">
         <SmoothScroll>
           <CustomCursor />
           <Shell>{children}</Shell>

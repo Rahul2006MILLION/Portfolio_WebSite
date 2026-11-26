@@ -6,7 +6,7 @@ interface ShellProps {
 
 export function Shell({ children }: ShellProps) {
   return (
-    <div className="relative min-h-[100dvh] w-full bg-[#070809] text-[#F5F6F8] selection:bg-[#d4ff00] selection:text-[#070809]">
+    <div className="relative min-h-[100dvh] w-full bg-[#060913] text-[#F8FAFC] selection:bg-[#d4af37] selection:text-[#060913]">
       {/* Viewport Frame Guides (F1 Telemetry / Aerospace precision hairlines) */}
       <div
         aria-hidden="true"
@@ -33,14 +33,14 @@ export function Shell({ children }: ShellProps) {
       {/* Subtle bottom telemetry border */}
       <div
         aria-hidden="true"
-        className="pointer-events-none fixed inset-x-0 bottom-0 z-20 flex justify-between border-t border-white/[0.04] bg-[#070809]/80 px-6 py-2.5 font-mono text-[9px] tracking-widest text-[#464B55] uppercase backdrop-blur-sm select-none"
+        className="pointer-events-none fixed inset-x-0 bottom-0 z-20 flex justify-between border-t border-white/[0.04] bg-[#060913]/85 px-6 py-2.5 font-mono text-[9px] tracking-widest text-[#64748B] uppercase backdrop-blur-sm select-none"
       >
         <span className="flex items-center gap-2">
-          <span className="h-1.5 w-1.5 rounded-full bg-[#d4ff00]/80 animate-pulse" />
-          CORE ENGINE // ACTIVE
+          <span className="h-1.5 w-1.5 rounded-full bg-[#d4af37]/80 animate-pulse" />
+          SYSTEM TELEMETRY // ACTIVE
         </span>
-        <span className="hidden sm:inline">PRECISION INTERFACE SYSTEM</span>
-        <span>PORTFOLIO // V1.0</span>
+        <span className="hidden sm:inline">N. P. RAHUL JAIN // PORTFOLIO</span>
+        <span>INDEX // 2024–2028</span>
       </div>
 
       {/* Main content slot */}
