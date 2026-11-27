@@ -60,10 +60,16 @@ export function Navbar() {
   }, [open]);
 
   const go = (e: React.MouseEvent<HTMLAnchorElement>, href: string) => {
-    if (onHome && href.startsWith("#") && scrollToHash(href)) {
-      e.preventDefault();
-      setOpen(false);
-    }
+    // Off the home page the href is "/#section": let the browser navigate normally.
+    if (!onHome || !href.startsWith("#") || !document.querySelector(href)) return;
+    e.preventDefault();
+    // The index overlay stops Lenis while it is open, and a stopped Lenis silently ignores
+    // scrollTo(). Close the overlay and resume scrolling *before* requesting the scroll.
+    setOpen(false);
+    lenis()?.start();
+    scrollToHash(href);
+    // Keep the URL shareable / refresh-safe without adding history entries.
+    history.replaceState(null, "", href);
   };
   const hrefFor = (h: string) => (onHome ? h : `/${h}`);
 
