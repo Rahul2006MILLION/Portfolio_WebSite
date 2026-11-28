@@ -11,6 +11,17 @@ import { gsap, ScrollTrigger } from "@/lib/animations/gsapConfig";
  *   data-draw="y|x"       a line that draws itself across its parent's scroll range
  * Everything is transform/opacity only, and only runs when the visitor allows motion.
  */
+/**
+ * These triggers are created here, *before* sections further down the page create theirs (this
+ * component renders ahead of <main>, so its effect runs first). ScrollTrigger refreshes in
+ * creation order by default, and a pin's added scroll distance only counts for triggers refreshed
+ * after it — so on desktop, where the Experience section pins, every trigger below it measured
+ * its range ~one pin-length too early and finished before it was ever on screen.
+ * Declaring `refreshPriority` (any value) makes every refresh sort all triggers by their real
+ * page position first (ScrollTrigger.sort), independent of React mount order.
+ */
+const inPageOrder = { refreshPriority: 0 } as const;
+
 export function ScrollChoreography() {
   useEffect(() => {
     const mm = gsap.matchMedia();
@@ -26,7 +37,7 @@ export function ScrollChoreography() {
             scale: 1,
             ...r(window.innerWidth < 640 ? "28px" : "40px"),
             ease: "none",
-            scrollTrigger: { trigger: el, start: "top bottom", end: "top 25%", scrub: 0.5 },
+            scrollTrigger: { ...inPageOrder, trigger: el, start: "top bottom", end: "top 25%", scrub: 0.5 },
           }
         );
       });
@@ -39,7 +50,7 @@ export function ScrollChoreography() {
           {
             yPercent: -speed * 100,
             ease: "none",
-            scrollTrigger: { trigger: el.parentElement ?? el, start: "top bottom", end: "bottom top", scrub: true },
+            scrollTrigger: { ...inPageOrder, trigger: el.parentElement ?? el, start: "top bottom", end: "bottom top", scrub: true },
           }
         );
       });
@@ -52,7 +63,7 @@ export function ScrollChoreography() {
           {
             xPercent: to,
             ease: "none",
-            scrollTrigger: { trigger: el.parentElement ?? el, start: "top bottom", end: "bottom top", scrub: 0.4 },
+            scrollTrigger: { ...inPageOrder, trigger: el.parentElement ?? el, start: "top bottom", end: "bottom top", scrub: 0.4 },
           }
         );
       });
@@ -66,7 +77,7 @@ export function ScrollChoreography() {
             [axis]: 1,
             ease: "none",
             transformOrigin: axis === "scaleX" ? "0% 50%" : "50% 0%",
-            scrollTrigger: { trigger: el.parentElement ?? el, start: "top 75%", end: "bottom 60%", scrub: 0.4 },
+            scrollTrigger: { ...inPageOrder, trigger: el.parentElement ?? el, start: "top 75%", end: "bottom 60%", scrub: 0.4 },
           }
         );
       });
